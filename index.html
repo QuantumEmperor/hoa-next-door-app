@@ -144,7 +144,7 @@ function vReg(){
  '<div id="mgrwrap" style="display:none"><label for="f_mgrname">Name of property management company</label><input id="f_mgrname"></div>'+'<label for="f_res">Does the association have a reserve fund?</label><select id="f_res"><option>Yes</option><option>No</option><option>Not sure</option></select>'+
  '<label class="opt"><input type="checkbox" id="f_news"> Send me the HOA Next Door newsletter (optional)</label><label class="opt"><input type="checkbox" id="f_agree"> I have read and agree to the <a href="#" class="pp">Privacy Policy</a></label>'+'<p class="err" id="err" role="alert"></p><button class="btn" id="regbtn"'+(busy?' disabled':'')+'>'+(busy?'Joining…':'Join my community')+'</button>'+
  '<p style="text-align:center;margin-top:12px;font-size:14px">Already registered? <a href="#" class="tosign">Sign in</a></p>'+
- '<p style="text-align:center;margin-top:16px;font-size:13px"><a href="#" class="aboutlink">About &amp; our mission</a></p></div>';
+ '<p style="text-align:center;margin-top:16px;font-size:13px"><a href="#" class="aboutlink" style="color:var(--blue);font-weight:800;text-decoration:underline">About &amp; our mission</a></p></div>';
 }
 function vSignIn(){
  return '<div class="reg"><img alt="Alaska HOA and Condominium Accountability Project seal" src="'+LOGO+'"><h1>HOA Next Door</h1><p class="sub">Sign in to your account.</p></div><div class="form card">'+
@@ -152,7 +152,7 @@ function vSignIn(){
  '<label for="s_pass">Password</label><div class="pwrow"><input id="s_pass" type="password" autocomplete="current-password"><button type="button" class="pwtoggle" data-for="s_pass">Show</button></div>'+
  '<p class="err" id="err" role="alert"></p><button class="btn" id="signinbtn"'+(busy?' disabled':'')+'>'+(busy?'Signing in…':'Sign in')+'</button>'+
  '<p style="text-align:center;margin-top:12px;font-size:14px">New here? <a href="#" class="tosignup">Create an account</a></p>'+
- '<p style="text-align:center;margin-top:16px;font-size:13px"><a href="#" class="aboutlink">About &amp; our mission</a></p></div>';
+ '<p style="text-align:center;margin-top:16px;font-size:13px"><a href="#" class="aboutlink" style="color:var(--blue);font-weight:800;text-decoration:underline">About &amp; our mission</a></p></div>';
 }
 function vSignedOut(){
  return '<div class="reg"><img alt="Alaska HOA and Condominium Accountability Project seal" src="'+LOGO+'"><h1>See you soon, neighbor</h1></div>'+
@@ -163,7 +163,7 @@ function vSignedOut(){
  '<p style="margin:0;font-weight:800">Positive thinking!</p>'+
  '</div>'+
  '<button class="btn" id="contbtn">Continue</button>'+
- '<p style="text-align:center;margin-top:16px;font-size:13px"><a href="#" class="aboutlink">About &amp; our mission</a></p>';
+ '<p style="text-align:center;margin-top:16px;font-size:13px"><a href="#" class="aboutlink" style="color:var(--blue);font-weight:800;text-decoration:underline">About &amp; our mission</a></p>';
 }
 function showAbout(){
  if(document.querySelector(".ov"))return;
