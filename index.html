@@ -118,7 +118,17 @@ var API_BASE="https://alaska-hoa-server.onrender.com";
 var reg=null;try{reg=JSON.parse(localStorage.getItem("hoand_user"))}catch(e){}
 var authToken=null;try{authToken=localStorage.getItem("hoand_token")}catch(e){}
 if(!authToken)reg=null;
-var mode="signup",busy=false;
+var mode="welcome",busy=false;
+function vWelcome(){
+ return '<div class="reg"><img alt="Alaska HOA and Condominium Accountability Project seal" src="'+LOGO+'"><h1>HOA Next Door</h1><p class="sub">A place for owners in every Alaska HOA community to see what\'s happening and connect with their neighbors.</p></div>'+
+ '<div class="card" style="text-align:left">'+
+ '<p style="margin:0 0 10px">See posts from neighbors in your community, share what\'s going on, and stay in the loop — all in one place.</p>'+
+ '<p style="margin:0">It takes about two minutes to join.</p>'+
+ '</div>'+
+ '<button class="btn tosignup" id="welcomejoin">Join my community</button>'+
+ '<button class="btn light tosign" id="welcomesignin" style="margin-top:10px">I already have an account</button>'+
+ '<p style="text-align:center;margin-top:16px;font-size:13px"><a href="#" class="aboutlink" style="color:var(--blue);font-weight:800;text-decoration:underline">About &amp; our mission</a></p>';
+}
 function vReg(){
  var dues=["Water","Sewer","Garbage","Heat","Snow removal","Insurance","Reserves","Landscaping"];
  return '<div class="reg"><img alt="Alaska HOA and Condominium Accountability Project seal" src="'+LOGO+'"><h1>HOA Next Door</h1><p class="sub">Sign up to join your condo community. It takes about two minutes.</p></div><div class="form card">'+
@@ -128,7 +138,7 @@ function vReg(){
  '<label for="f_pass">Password</label><div class="pwrow"><input id="f_pass" type="password" autocomplete="new-password" placeholder="At least 8 characters"><button type="button" class="pwtoggle" data-for="f_pass">Show</button></div>'+
  '<div class="two"><div><label for="f_unit">Your unit number</label><input id="f_unit" autocomplete="off"></div><div><label for="f_role">You are a</label><select id="f_role" autocomplete="off"><option value="" selected disabled>Select one</option><option>Owner who lives here</option><option>Owner who rents it out</option><option>Renter</option><option>Board member</option></select></div></div>'+
  '<h2>About your condo</h2>'+
- '<label for="f_condo">Name of condo</label><input id="f_condo" autocomplete="off" value="Lois Drive Condos">'+
+ '<label for="f_condo">Name of HOA</label><input id="f_condo" autocomplete="off" value="Lois Drive Condos">'+
  '<div class="two"><div><label for="f_units">Number of units</label><input id="f_units" type="text" inputmode="numeric" autocomplete="off" placeholder="e.g. 24"></div><div><label for="f_dues">Monthly dues per unit ($)</label><input id="f_dues" type="text" inputmode="decimal" autocomplete="off" placeholder="e.g. 250"></div></div>'+
  '<label>What do the dues cover?</label><div class="checks">'+dues.map(function(d){return '<label><input type="checkbox" class="f_cov" value="'+d+'">'+d+'</label>'}).join("")+'<label><input type="checkbox" id="f_cov_other">Other</label></div>'+
  '<div id="covotherwrap" style="display:none"><input id="f_cov_other_text" autocomplete="off" placeholder="What else do the dues cover?"></div>'+
@@ -296,8 +306,8 @@ function loadReplies(postId){
 }
 function render(){
  var hd=document.getElementById("hd"),nv=document.getElementById("nav"),mn=document.getElementById("main");
- if(!reg){hd.style.display="none";nv.style.display="none";mn.innerHTML=(mode=="signin"?vSignIn():mode=="signedout"?vSignedOut():vReg());
-  if(mode!="signin"&&mode!="signedout"){["f_role","f_mgr","f_res","f_law"].forEach(function(id){var el=document.getElementById(id);if(el)el.value=""});}
+ if(!reg){hd.style.display="none";nv.style.display="none";mn.innerHTML=(mode=="signin"?vSignIn():mode=="signedout"?vSignedOut():mode=="welcome"?vWelcome():vReg());
+  if(mode!="signin"&&mode!="signedout"&&mode!="welcome"){["f_role","f_mgr","f_res","f_law"].forEach(function(id){var el=document.getElementById(id);if(el)el.value=""});}
   return}
  hd.style.display="flex";nv.style.display="none";
  hd.innerHTML='<img alt="Alaska HOA and Condominium Accountability Project seal" src="'+LOGO+'"><div><b>HOA Next Door</b><small>'+esc(reg.condo)+', '+esc(reg.units)+' units</small></div><button id="signout">Sign out</button>';
