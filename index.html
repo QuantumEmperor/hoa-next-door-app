@@ -299,7 +299,7 @@ function render(){
  if(!reg){hd.style.display="none";nv.style.display="none";mn.innerHTML=(mode=="signin"?vSignIn():mode=="signedout"?vSignedOut():vReg());
   if(mode!="signin"&&mode!="signedout"){["f_role","f_mgr","f_res","f_law"].forEach(function(id){var el=document.getElementById(id);if(el)el.value=""});}
   return}
- hd.style.display="flex";nv.style.display="flex";
+ hd.style.display="flex";nv.style.display="none";
  hd.innerHTML='<img alt="Alaska HOA and Condominium Accountability Project seal" src="'+LOGO+'"><div><b>HOA Next Door</b><small>'+esc(reg.condo)+', '+esc(reg.units)+' units</small></div><button id="signout">Sign out</button>';
  var v={feed:vFeed}[cur];
  mn.innerHTML=v();nav();
