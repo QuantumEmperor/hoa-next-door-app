@@ -237,7 +237,7 @@ function vFeed(){
  var cats=["All","Lost & found","Recommendations","For sale","Events"];
  var list=feed.filter(function(p){return cat=="All"||p.c==cat});
  return '<div class="chips">'+cats.map(function(c){return '<button class="chip'+(c==cat?" on":"")+'" data-c="'+esc(c)+'">'+esc(c)+'</button>'}).join("")+'</div>'+
- '<div class="card"><label for="np">Post to your neighbors</label><textarea id="np" rows="2" maxlength="130" placeholder="What\'s going on?"></textarea><div class="meta" style="margin-top:-6px;margin-bottom:10px;justify-content:flex-end" id="npcount">0/130</div><select id="nc"><option>Recommendations</option><option>Lost & found</option><option>For sale</option><option>Events</option></select><p class="err" id="perr" role="alert" style="margin-top:8px"></p><button class="btn" id="post">Post</button></div>'+
+ '<div class="card"><label for="np">Post to your neighbors</label><textarea id="np" rows="2" maxlength="130" placeholder="What\'s going on?"></textarea><div class="meta" style="margin-top:-6px;margin-bottom:10px;justify-content:flex-end" id="npcount">0/130</div><p class="err" id="perr" role="alert" style="margin-top:8px"></p><button class="btn" id="post">Post</button></div>'+
  (list.length?list.map(function(p,i){return '<div class="card"><div class="who"><span class="av">'+p.a+'</span><b style="color:var(--ink)">'+esc(p.n)+'</b><span class="tag">'+esc(p.c)+'</span></div><p>'+esc(p.b)+'</p><div class="meta"><button data-like="'+feed.indexOf(p)+'" class="'+(p.liked?"liked":"")+'">'+(p.liked?"♥":"♡")+' '+p.l+'</button><span>💬 '+p.cm+'</span><span>'+p.d+'</span></div></div>'}).join(""):'<div class="empty">No posts here yet. Be the first to post.</div>')+
  '<p style="text-align:center;margin-top:16px"><a href="#" class="pp" style="color:var(--blue);font-weight:800">Privacy Policy</a></p>';
 }
@@ -323,7 +323,7 @@ function onAppClick(e){
   if(!v){pe.textContent="Write something first.";return}
   if(v.length>130){pe.textContent="Please keep it to 130 characters or fewer.";return}
   if(hasProfanity(v)){pe.textContent="Please remove inappropriate language before posting.";return}
-  feed.unshift({n:"You",a:"Y",c:document.getElementById("nc").value,b:v,d:"Just now",l:0,cm:0});cat="All";render();toast("Posted")}
+  feed.unshift({n:"You",a:"Y",c:(cat=="All"?"Recommendations":cat),b:v,d:"Just now",l:0,cm:0});render();toast("Posted")}
 }
 document.addEventListener("change",function(e){
  if(e.target.id=="f_mgr"){document.getElementById("mgrwrap").style.display=e.target.value.indexOf("property")>-1?"block":"none"}
