@@ -142,6 +142,7 @@ function vReg(){
  '<div id="covotherwrap" style="display:none"><input id="f_cov_other_text" placeholder="What else do the dues cover?"></div>'+
  '<label for="f_mgr">Who manages it?</label><select id="f_mgr"><option>The board (self-managed)</option><option>A property management company</option><option>Not sure</option></select>'+
  '<div id="mgrwrap" style="display:none"><label for="f_mgrname">Name of property management company</label><input id="f_mgrname"></div>'+'<label for="f_res">Does the association have a reserve fund?</label><select id="f_res"><option>Yes</option><option>No</option><option>Not sure</option></select>'+
+ '<label for="f_law">Is your HOA or condo association currently in a lawsuit?</label><select id="f_law"><option>Yes</option><option>No</option><option>Prefer not to say</option></select>'+
  '<label class="opt"><input type="checkbox" id="f_news"> Send me the HOA Next Door newsletter (optional)</label><label class="opt"><input type="checkbox" id="f_agree"> I have read and agree to the <a href="#" class="pp">Privacy Policy</a></label>'+'<p class="err" id="err" role="alert"></p><button class="btn" id="regbtn"'+(busy?' disabled':'')+'>'+(busy?'Joining…':'Join my community')+'</button>'+
  '<p style="text-align:center;margin-top:12px;font-size:14px">Already registered? <a href="#" class="tosign">Sign in</a></p>'+
  '<p style="text-align:center;margin-top:16px;font-size:13px"><a href="#" class="aboutlink" style="color:var(--blue);font-weight:800;text-decoration:underline">About &amp; our mission</a></p></div>';
@@ -288,7 +289,7 @@ function onAppClick(e){
   var g=function(i){return document.getElementById(i).value.trim()};
   var cov=[].slice.call(document.querySelectorAll(".f_cov:checked")).map(function(c){return c.value});
   if(document.getElementById("f_cov_other").checked){var ot=document.getElementById("f_cov_other_text").value.trim();if(ot)cov.push(ot)}
-  var r={name:g("f_name"),email:g("f_email"),password:g("f_pass"),unit:g("f_unit"),role:g("f_role"),condo:g("f_condo"),units:g("f_units"),dues:g("f_dues"),covers:cov,mgr:g("f_mgr"),mgrName:(g("f_mgr").indexOf("property")>-1?g("f_mgrname"):""),reserve:g("f_res"),newsletter:document.getElementById("f_news").checked,agreedToPrivacyPolicy:document.getElementById("f_agree").checked};
+  var r={name:g("f_name"),email:g("f_email"),password:g("f_pass"),unit:g("f_unit"),role:g("f_role"),condo:g("f_condo"),units:g("f_units"),dues:g("f_dues"),covers:cov,mgr:g("f_mgr"),mgrName:(g("f_mgr").indexOf("property")>-1?g("f_mgrname"):""),reserve:g("f_res"),lawsuit:g("f_law"),newsletter:document.getElementById("f_news").checked,agreedToPrivacyPolicy:document.getElementById("f_agree").checked};
   var er=document.getElementById("err");er.textContent="";
   if(!r.name||!r.unit||!r.condo){er.textContent="Please fill in your name, unit number, and condo name.";return}
   if(!/^\S+@\S+\.\S+$/.test(r.email)){er.textContent="Enter a valid email address.";return}
