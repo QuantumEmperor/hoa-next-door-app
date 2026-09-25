@@ -236,7 +236,7 @@ function vFeed(){
  if(feedLoading&&!feedLoaded){listHtml='<div class="empty">Loading the feed…</div>'}
  else if(feedError){listHtml='<div class="empty">'+esc(feedError)+'</div>'}
  else if(!list.length){listHtml='<div class="empty">No posts here yet. Be the first to post.</div>'}
- else{listHtml=list.map(function(p){return '<div class="card"><div class="who"><span class="av">'+esc((p.name||"?").charAt(0))+'</span><b style="color:var(--ink)">'+esc(p.name)+'</b><span class="tag">'+esc(p.category)+'</span></div><p>'+esc(p.body)+'</p><div class="meta"><span>'+esc(p.createdAt?new Date(p.createdAt).toLocaleString():"")+'</span><button class="repliesbtn" data-viewreplies="'+esc(p.id)+'">💬 '+(p.replyCount||0)+'</button></div>'+vReplies(p)+'</div>'}).join("")}
+ else{listHtml=list.map(function(p){return '<div class="card"><div class="who"><span class="av">'+esc((p.name||"?").charAt(0))+'</span><b style="color:var(--ink)">'+esc(p.name)+'</b><span class="tag">'+esc(p.category)+'</span></div><p>'+esc(p.body)+'</p><div class="meta"><span>'+esc(p.createdAt?new Date(p.createdAt).toLocaleString():"")+'</span><button class="repliesbtn" data-viewreplies="'+esc(p.id)+'">💬 '+(p.replyCount||0)+'</button>'+(p.canDelete?'<button class="delbtn" data-delpost="'+esc(p.id)+'" style="color:var(--warn)">Delete</button>':'')+'</div>'+vReplies(p)+'</div>'}).join("")}
  return '<div class="chips">'+cats.map(function(c){return '<button class="chip'+(c==cat?" on":"")+'" data-c="'+esc(c)+'">'+esc(c)+'</button>'}).join("")+'</div>'+
  '<div class="card"><label for="np">Post to your neighbors</label><textarea id="np" rows="2" maxlength="130" placeholder="What\'s going on?"></textarea><div class="meta" style="margin-top:-6px;margin-bottom:10px;justify-content:flex-end" id="npcount">0/130</div><p class="err" id="perr" role="alert" style="margin-top:8px"></p><button class="btn" id="post"'+(busy?' disabled':'')+'>'+(busy?"Posting…":"Post")+'</button></div>'+
  listHtml+
@@ -261,7 +261,7 @@ function vReplies(p){
  var body;
  if(repliesLoadingId===p.id&&!list){body='<div class="empty" style="padding:10px">Loading replies…</div>'}
  else if(!list||!list.length){body='<div class="empty" style="padding:10px">No replies yet.</div>'}
- else{body=list.map(function(r){return '<div style="padding:8px 0;border-top:1px solid var(--line)"><b style="font-size:13px">'+esc(r.name)+'</b> <span style="font-size:13px">'+esc(r.body)+'</span></div>'}).join("")}
+ else{body=list.map(function(r){return '<div style="padding:8px 0;border-top:1px solid var(--line)"><b style="font-size:13px">'+esc(r.name)+'</b> <span style="font-size:13px">'+esc(r.body)+'</span>'+(r.canDelete?' <button class="delbtn" data-delreply="'+esc(r.id)+'" data-delreplypost="'+esc(p.id)+'" style="color:var(--warn);font-size:12px">Delete</button>':'')+'</div>'}).join("")}
  return '<div class="replies" style="margin-top:8px;padding-top:8px;border-top:1px solid var(--line)">'+body+
  '<textarea class="rp" data-postid="'+esc(p.id)+'" rows="2" maxlength="130" placeholder="Write a reply…" style="margin-top:8px"></textarea>'+
  '<div class="meta" style="margin-top:-6px;margin-bottom:6px;justify-content:flex-end" id="rpcount_'+esc(p.id)+'">0/130</div>'+
@@ -304,7 +304,7 @@ document.addEventListener("click",function(e){
  try{onAppClick(e)}catch(diagErr){var eb=document.getElementById("err");if(eb)eb.textContent="Something broke: "+diagErr.message;console.error(diagErr)}
 });
 function onAppClick(e){
- var t=e.target.closest("[data-t],[data-c],[data-viewreplies],[data-replyto],#post,#regbtn,#signinbtn,#signout,#contbtn,.pp,.ppx,.tosign,.tosignup,.pwtoggle,.aboutlink");if(!t)return;if(t.classList.contains("pp")){e.preventDefault();showPolicy();return}if(t.classList.contains("ppx")){var o=document.querySelector(".ov");if(o)o.remove();return}if(t.classList.contains("aboutlink")){e.preventDefault();showAbout();return}
+ var t=e.target.closest("[data-t],[data-c],[data-viewreplies],[data-replyto],[data-delpost],[data-delreply],#post,#regbtn,#signinbtn,#signout,#contbtn,.pp,.ppx,.tosign,.tosignup,.pwtoggle,.aboutlink");if(!t)return;if(t.classList.contains("pp")){e.preventDefault();showPolicy();return}if(t.classList.contains("ppx")){var o=document.querySelector(".ov");if(o)o.remove();return}if(t.classList.contains("aboutlink")){e.preventDefault();showAbout();return}
  if(t.classList.contains("pwtoggle")){var inp=document.getElementById(t.dataset.for);var showing=inp.type=="text";inp.type=showing?"password":"text";t.textContent=showing?"Show":"Hide";return}
  if(t.classList.contains("tosign")){e.preventDefault();mode="signin";render();return}
  if(t.classList.contains("tosignup")){e.preventDefault();mode="signup";render();return}
@@ -331,6 +331,33 @@ function onAppClick(e){
     render()
    })
    .catch(function(e){replyBusy=false;render();var e3=document.getElementById("rperr_"+pid2);if(e3)e3.textContent=apiError(e)})
+ }
+ else if(t.dataset.delpost){
+  var dpid=t.dataset.delpost;
+  if(!confirm("Delete this post? This cannot be undone."))return;
+  apiFetch("/api/posts/"+dpid,{method:"DELETE",headers:{"Authorization":"Bearer "+authToken}})
+   .then(function(res){return res.json().then(function(b){return {ok:res.ok,body:b}})})
+   .then(function(out){
+    if(!out.ok){toast(out.body.error||"Could not delete that post.");return}
+    feed=feed.filter(function(x){return x.id!=dpid});
+    delete repliesByPost[dpid];
+    if(openReplyId===dpid)openReplyId=null;
+    render();toast("Deleted")
+   })
+   .catch(function(e){toast(apiError(e))})
+ }
+ else if(t.dataset.delreply){
+  var drid=t.dataset.delreply,drpost=t.dataset.delreplypost;
+  if(!confirm("Delete this reply? This cannot be undone."))return;
+  apiFetch("/api/posts/"+drpost+"/replies/"+drid,{method:"DELETE",headers:{"Authorization":"Bearer "+authToken}})
+   .then(function(res){return res.json().then(function(b){return {ok:res.ok,body:b}})})
+   .then(function(out){
+    if(!out.ok){toast(out.body.error||"Could not delete that reply.");return}
+    if(repliesByPost[drpost])repliesByPost[drpost]=repliesByPost[drpost].filter(function(x){return x.id!=drid});
+    var fp2=feed.filter(function(x){return x.id==drpost})[0];if(fp2)fp2.replyCount=Math.max(0,(fp2.replyCount||1)-1);
+    render();toast("Deleted")
+   })
+   .catch(function(e){toast(apiError(e))})
  }
  else if(t.id=="regbtn"){
   var g=function(i){return document.getElementById(i).value.trim()};
