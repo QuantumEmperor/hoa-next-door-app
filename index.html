@@ -231,7 +231,7 @@ function nav(){
  document.getElementById("nav").innerHTML=tabs.map(function(t){return '<button class="'+(t[0]==cur?"on":"")+'" data-t="'+t[0]+'"><span>'+t[1]+'</span>'+t[2]+'</button>'}).join("");
 }
 function vFeed(){
- var cats=["All","Lost & found","Recommendations","For sale","Events"];
+ var cats=["All","General","Lost & found","Recommendations","For sale","Events"];
  var list=feed.filter(function(p){return cat=="All"||p.category==cat});
  var listHtml;
  if(feedLoading&&!feedLoaded){listHtml='<div class="empty">Loading the feed…</div>'}
@@ -445,7 +445,7 @@ function onAppClick(e){
   if(!v){pe.textContent="Write something first.";return}
   if(v.length>130){pe.textContent="Please keep it to 130 characters or fewer.";return}
   if(hasProfanity(v)){pe.textContent="Please remove inappropriate language before posting.";return}
-  var postCat=(cat=="All"?"Recommendations":cat);
+  var postCat="General";
   busy=true;render();
   apiFetch("/api/posts",{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+authToken},body:JSON.stringify({body:v,category:postCat})})
    .then(function(res){return res.json().then(function(b){return {ok:res.ok,body:b}})})
