@@ -131,19 +131,19 @@ function vReg(){
  var dues=["Water","Sewer","Garbage","Heat","Snow removal","Insurance","Reserves","Landscaping"];
  return '<div class="reg"><img alt="Alaska HOA and Condominium Accountability Project seal" src="'+LOGO+'"><h1>HOA Next Door</h1><p class="sub">Sign up to join your condo community. It takes about two minutes.</p></div><div class="form card">'+
  '<h2>About you</h2>'+
- '<label for="f_name">Full name</label><input id="f_name" autocomplete="name">'+
- '<label for="f_email">Email</label><input id="f_email" type="email" autocomplete="email">'+
+ '<label for="f_name">Full name</label><input id="f_name" autocomplete="off">'+
+ '<label for="f_email">Email</label><input id="f_email" type="email" autocomplete="off">'+
  '<label for="f_pass">Password</label><div class="pwrow"><input id="f_pass" type="password" autocomplete="new-password" placeholder="At least 8 characters"><button type="button" class="pwtoggle" data-for="f_pass">Show</button></div>'+
- '<div class="two"><div><label for="f_unit">Your unit number</label><input id="f_unit"></div><div><label for="f_role">You are a</label><select id="f_role"><option>Owner who lives here</option><option>Owner who rents it out</option><option>Renter</option><option>Board member</option></select></div></div>'+
+ '<div class="two"><div><label for="f_unit">Your unit number</label><input id="f_unit" autocomplete="off"></div><div><label for="f_role">You are a</label><select id="f_role"><option>Owner who lives here</option><option>Owner who rents it out</option><option>Renter</option><option>Board member</option></select></div></div>'+
  '<h2>About your condo</h2>'+
- '<label for="f_condo">Name of condo</label><input id="f_condo" value="Lois Drive Condos">'+
- '<div class="two"><div><label for="f_units">Number of units</label><input id="f_units" type="text" inputmode="numeric" placeholder="e.g. 24"></div><div><label for="f_dues">Monthly dues per unit ($)</label><input id="f_dues" type="text" inputmode="decimal" placeholder="e.g. 250"></div></div>'+
+ '<label for="f_condo">Name of condo</label><input id="f_condo" autocomplete="off" value="Lois Drive Condos">'+
+ '<div class="two"><div><label for="f_units">Number of units</label><input id="f_units" type="text" inputmode="numeric" autocomplete="off" placeholder="e.g. 24"></div><div><label for="f_dues">Monthly dues per unit ($)</label><input id="f_dues" type="text" inputmode="decimal" autocomplete="off" placeholder="e.g. 250"></div></div>'+
  '<label>What do the dues cover?</label><div class="checks">'+dues.map(function(d){return '<label><input type="checkbox" class="f_cov" value="'+d+'">'+d+'</label>'}).join("")+'<label><input type="checkbox" id="f_cov_other">Other</label></div>'+
- '<div id="covotherwrap" style="display:none"><input id="f_cov_other_text" placeholder="What else do the dues cover?"></div>'+
+ '<div id="covotherwrap" style="display:none"><input id="f_cov_other_text" autocomplete="off" placeholder="What else do the dues cover?"></div>'+
  '<label for="f_mgr">Who manages it?</label><select id="f_mgr"><option>The board (self-managed)</option><option>A property management company</option><option>Not sure</option></select>'+
- '<div id="mgrwrap" style="display:none"><label for="f_mgrname">Name of property management company</label><input id="f_mgrname"></div>'+'<label for="f_res">Does the association have a reserve fund?</label><select id="f_res"><option>Yes</option><option>No</option><option>Not sure</option></select>'+
- '<label for="f_law">Is your HOA or condo association currently in a lawsuit?</label><select id="f_law"><option>Yes</option><option>No</option><option>Prefer not to say</option></select>'+
- '<label for="f_quorum">How many owners are needed for a quorum at a meeting?</label><input id="f_quorum" type="text" inputmode="numeric" placeholder="e.g. 10, or a %, or not sure">'+
+ '<div id="mgrwrap" style="display:none"><label for="f_mgrname">Name of property management company</label><input id="f_mgrname" autocomplete="off"></div>'+'<label for="f_res">Does the association have a reserve fund?</label><select id="f_res"><option value="" selected disabled>Select one</option><option>Yes</option><option>No</option><option>Not sure</option></select>'+
+ '<label for="f_law">Is your HOA or condo association currently in a lawsuit?</label><select id="f_law"><option value="" selected disabled>Select one</option><option>Yes</option><option>No</option><option>Prefer not to say</option></select>'+
+ '<label for="f_quorum">How many owners are needed for a quorum at a meeting?</label><input id="f_quorum" type="text" inputmode="numeric" autocomplete="off" placeholder="e.g. 10, or a %, or not sure">'+
  '<label class="opt"><input type="checkbox" id="f_news"> Send me the HOA Next Door newsletter (optional)</label><label class="opt"><input type="checkbox" id="f_agree"> I have read and agree to the <a href="#" class="pp">Privacy Policy</a></label>'+'<p class="err" id="err" role="alert"></p><button class="btn" id="regbtn"'+(busy?' disabled':'')+'>'+(busy?'Joining…':'Join my community')+'</button>'+
  '<p style="text-align:center;margin-top:12px;font-size:14px">Already registered? <a href="#" class="tosign">Sign in</a></p>'+
  '<p style="text-align:center;margin-top:16px;font-size:13px"><a href="#" class="aboutlink" style="color:var(--blue);font-weight:800;text-decoration:underline">About &amp; our mission</a></p></div>';
@@ -195,7 +195,7 @@ function showPolicy(){
 <ul><li>Your device stores a login token and your basic profile locally (in browser storage) so you stay signed in. This stays on your device and is not something we collect on our servers beyond what's described above.</li>
 <li>Our hosting providers may log standard technical information (such as IP address and timestamps) as part of normal server operation and security monitoring.</li></ul>
 <h2>2. How we use your information</h2>
-<p>We use it to: verify you are a real resident before granting access; let you log in and stay logged in; operate the features of the app (announcements, community feed, problem reports, documents); communicate with you about your account or the community; send the optional newsletter, only if you opted in; maintain the security and integrity of the app; and produce anonymous, aggregated statistics about HOA and condo conditions across Alaska (see Section 5).</p>
+<p>We use it to: let you log in and stay logged in; operate the features of the app (announcements, community feed, problem reports, documents); communicate with you about your account or the community; send the optional newsletter, only if you opted in; maintain the security and integrity of the app; and produce anonymous, aggregated statistics about HOA and condo conditions across Alaska (see Section 5).</p>
 <h2>3. Who can see your information</h2>
 <p>Your name, email address, unit number, and password are private. Only the Project administrator can view this information. We do not sell it, rent it, or share it with advertisers or other third parties for their own marketing purposes.</p>
 <p>Other residents of your community can see content you choose to post (such as community feed posts or problem reports), generally shown with your first name and last initial, not your full account details.</p>
@@ -214,7 +214,7 @@ function showPolicy(){
 <ul><li>You can ask to access, correct, or delete your personal information at any time.</li>
 <li>You can unsubscribe from the optional newsletter at any time; this will not affect your ability to use the app.</li>
 <li>You can request that your account be closed and your personal information deleted, subject to Section 6.</li></ul>
-<p>To exercise any of these choices, contact us at <b>surrealblues@gmail.com</b>.</p>
+<p>To exercise any of these choices, contact us at <b>quantumactivist.88@gmail.com</b>.</p>
 <h2>10. Children's privacy</h2>
 <p>This app is intended for adult residents, owners, and property managers. It is not directed to children, and we do not knowingly collect information from anyone under 18. If we learn that we have done so, we will delete that information.</p>
 <h2>11. Changes to this policy</h2>
@@ -222,7 +222,7 @@ function showPolicy(){
 <h2>12. Governing law</h2>
 <p>This policy is governed by the laws of the State of Alaska, without regard to conflict-of-law principles.</p>
 <h2>13. Contact</h2>
-<p>Questions about this policy or your information can be sent to <b>surrealblues@gmail.com</b>.</p>
+<p>Questions about this policy or your information can be sent to <b>quantumactivist.88@gmail.com</b>.</p>
 <p style="color:var(--mute);font-size:13px;margin-top:16px">This policy is provided for transparency about our practices and is not a substitute for independent legal advice.</p>
 <button class="btn ppx" style="margin-top:14px">Close</button>`;
  document.body.appendChild(d);d.scrollTop=0;
