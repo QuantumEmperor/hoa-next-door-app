@@ -137,7 +137,7 @@ function vReg(){
  '<label for="f_email">Email</label><input id="f_email" type="email" autocomplete="off">'+
  '<label for="f_pass">Password</label><div class="pwrow"><input id="f_pass" type="password" autocomplete="new-password" placeholder="At least 8 characters"><button type="button" class="pwtoggle" data-for="f_pass">Show</button></div>'+
  '<div class="two"><div><label for="f_unit">Your unit number</label><input id="f_unit" autocomplete="off"></div><div><label for="f_role">You are a</label><select id="f_role" autocomplete="off"><option value="" selected disabled>Select one</option><option>Owner who lives here</option><option>Owner who rents it out</option><option>Renter</option><option>Board member</option></select></div></div>'+
- '<label for="f_condo">Name of HOA</label><input id="f_condo" autocomplete="off" value="Lois Drive Condos">'+
+ '<label for="f_condo">Name of HOA</label><input id="f_condo" autocomplete="off">'+
  '<div class="two"><div><label for="f_units">Number of units</label><input id="f_units" type="text" inputmode="numeric" autocomplete="off" placeholder="e.g. 24"></div><div><label for="f_dues">Monthly dues per unit ($)</label><input id="f_dues" type="text" inputmode="decimal" autocomplete="off" placeholder="e.g. 250"></div></div>'+
  '<label>What do the dues cover?</label><div class="checks">'+dues.map(function(d){return '<label><input type="checkbox" class="f_cov" value="'+d+'">'+d+'</label>'}).join("")+'<label><input type="checkbox" id="f_cov_other">Other</label></div>'+
  '<div id="covotherwrap" style="display:none"><input id="f_cov_other_text" autocomplete="off" placeholder="What else do the dues cover?"></div>'+
