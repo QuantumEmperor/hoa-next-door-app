@@ -130,14 +130,21 @@ function vWelcome(){
  '<p style="text-align:center;margin-top:16px;font-size:13px"><a href="#" class="aboutlink" style="color:var(--blue);font-weight:800;text-decoration:underline">About &amp; our mission</a></p>';
 }
 function vReg(){
+ var dues=["Water","Sewer","Garbage","Heat","Snow removal","Insurance","Reserves","Landscaping"];
  return '<div class="reg"><img alt="Alaska HOA and Condominium Accountability Project seal" src="'+LOGO+'"><h1>HOA Next Door</h1><p class="sub">Sign up to join your condo community. It takes about two minutes.</p></div><div class="form card">'+
  '<h2>About you</h2>'+
  '<label for="f_name">Full name</label><input id="f_name" autocomplete="off">'+
  '<label for="f_email">Email</label><input id="f_email" type="email" autocomplete="off">'+
  '<label for="f_pass">Password</label><div class="pwrow"><input id="f_pass" type="password" autocomplete="new-password" placeholder="At least 8 characters"><button type="button" class="pwtoggle" data-for="f_pass">Show</button></div>'+
  '<div class="two"><div><label for="f_unit">Your unit number</label><input id="f_unit" autocomplete="off"></div><div><label for="f_role">You are a</label><select id="f_role" autocomplete="off"><option value="" selected disabled>Select one</option><option>Owner who lives here</option><option>Owner who rents it out</option><option>Renter</option><option>Board member</option></select></div></div>'+
- '<h2>About your condo</h2>'+
  '<label for="f_condo">Name of HOA</label><input id="f_condo" autocomplete="off" value="Lois Drive Condos">'+
+ '<div class="two"><div><label for="f_units">Number of units</label><input id="f_units" type="text" inputmode="numeric" autocomplete="off" placeholder="e.g. 24"></div><div><label for="f_dues">Monthly dues per unit ($)</label><input id="f_dues" type="text" inputmode="decimal" autocomplete="off" placeholder="e.g. 250"></div></div>'+
+ '<label>What do the dues cover?</label><div class="checks">'+dues.map(function(d){return '<label><input type="checkbox" class="f_cov" value="'+d+'">'+d+'</label>'}).join("")+'<label><input type="checkbox" id="f_cov_other">Other</label></div>'+
+ '<div id="covotherwrap" style="display:none"><input id="f_cov_other_text" autocomplete="off" placeholder="What else do the dues cover?"></div>'+
+ '<label for="f_mgr">Who manages it?</label><select id="f_mgr" autocomplete="off"><option value="" selected disabled>Select one</option><option>The board (self-managed)</option><option>A property management company</option><option>Not sure</option></select>'+
+ '<div id="mgrwrap" style="display:none"><label for="f_mgrname">Name of property management company</label><input id="f_mgrname" autocomplete="off"></div>'+'<label for="f_res">Does the association have a reserve fund?</label><select id="f_res" autocomplete="off"><option value="" selected disabled>Select one</option><option>Yes</option><option>No</option><option>Not sure</option></select>'+
+ '<label for="f_law">Is your HOA or condo association currently in a lawsuit?</label><select id="f_law" autocomplete="off"><option value="" selected disabled>Select one</option><option>Yes</option><option>No</option><option>Prefer not to say</option></select>'+
+ '<label for="f_quorum">How many owners are needed for a quorum at a meeting?</label><input id="f_quorum" type="text" inputmode="numeric" autocomplete="off" placeholder="e.g. 10, or a %, or not sure">'+
  '<label class="opt"><input type="checkbox" id="f_news"> Send me the HOA Next Door newsletter (optional)</label><label class="opt"><input type="checkbox" id="f_agree"> I have read and agree to the <a href="#" class="pp">Privacy Policy</a></label>'+'<p class="err" id="err" role="alert">'+esc(regErr)+'</p><button class="btn" id="regbtn"'+(busy?' disabled':'')+'>'+(busy?'Joining…':'Join my community')+'</button>'+
  '<p style="text-align:center;margin-top:12px;font-size:14px">Already registered? <a href="#" class="tosign">Sign in</a></p>'+
  '<p style="text-align:center;margin-top:16px;font-size:13px"><a href="#" class="aboutlink" style="color:var(--blue);font-weight:800;text-decoration:underline">About &amp; our mission</a></p></div>';
@@ -299,7 +306,7 @@ function loadReplies(postId){
 function render(){
  var hd=document.getElementById("hd"),nv=document.getElementById("nav"),mn=document.getElementById("main");
  if(!reg){hd.style.display="none";nv.style.display="none";mn.innerHTML=(mode=="signin"?vSignIn():mode=="signedout"?vSignedOut():mode=="welcome"?vWelcome():vReg());
-  if(mode!="signin"&&mode!="signedout"&&mode!="welcome"){["f_role"].forEach(function(id){var el=document.getElementById(id);if(el)el.value=""});}
+  if(mode!="signin"&&mode!="signedout"&&mode!="welcome"){["f_role","f_mgr","f_res","f_law"].forEach(function(id){var el=document.getElementById(id);if(el)el.value=""});}
   return}
  hd.style.display="flex";nv.style.display="none";
  hd.innerHTML='<img alt="Alaska HOA and Condominium Accountability Project seal" src="'+LOGO+'"><div><b>HOA Next Door</b><small>'+esc(reg.condo)+', '+esc(reg.units)+' units</small></div><button id="signout">Sign out</button>';
@@ -397,12 +404,22 @@ function onAppClick(e){
  }
  else if(t.id=="regbtn"){
   var g=function(i){return document.getElementById(i).value.trim()};
-  var r={name:g("f_name"),email:g("f_email"),password:g("f_pass"),unit:g("f_unit"),role:g("f_role"),condo:g("f_condo"),newsletter:document.getElementById("f_news").checked,agreedToPrivacyPolicy:document.getElementById("f_agree").checked};
+  var cov=[].slice.call(document.querySelectorAll(".f_cov:checked")).map(function(c){return c.value});
+  if(document.getElementById("f_cov_other").checked){var ot=document.getElementById("f_cov_other_text").value.trim();if(ot)cov.push(ot)}
+  var r={name:g("f_name"),email:g("f_email"),password:g("f_pass"),unit:g("f_unit"),role:g("f_role"),condo:g("f_condo"),units:g("f_units"),dues:g("f_dues"),covers:cov,mgr:g("f_mgr"),mgrName:(g("f_mgr").indexOf("property")>-1?g("f_mgrname"):""),reserve:g("f_res"),lawsuit:g("f_law"),quorum:g("f_quorum"),newsletter:document.getElementById("f_news").checked,agreedToPrivacyPolicy:document.getElementById("f_agree").checked};
   regErr="";
   if(!r.name||!r.unit||!r.condo){regErr="Please fill in your name, unit number, and condo name.";render();return}
   if(!/^\S+@\S+\.\S+$/.test(r.email)){regErr="Enter a valid email address.";render();return}
   if(!r.password||r.password.length<8){regErr="Password must be at least 8 characters.";render();return}
   if(!r.role){regErr="Please select what you are (owner, renter, or board member).";render();return}
+  if(!(+r.units>0)){regErr="Enter how many units are in your condo.";render();return}
+  if(r.dues===""||!(+r.dues>=0)){regErr="Enter the monthly dues, even if it is 0.";render();return}
+  if(!cov.length){regErr="Select at least one thing the dues cover.";render();return}
+  if(!r.mgr){regErr="Please select who manages the condo.";render();return}
+  if(r.mgr.indexOf("property")>-1&&!r.mgrName){regErr="Enter the name of your property management company.";render();return}
+  if(!r.reserve){regErr="Please answer whether the association has a reserve fund.";render();return}
+  if(!r.lawsuit){regErr="Please answer whether the association is in a lawsuit.";render();return}
+  if(!r.quorum){regErr="Please answer how many owners are needed for a quorum.";render();return}
   if(!r.agreedToPrivacyPolicy){regErr="Please agree to the Privacy Policy to continue.";render();return}
   busy=true;render();
   apiFetch("/api/auth/register",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(r)})
@@ -450,6 +467,10 @@ function onAppClick(e){
    })
    .catch(function(e){busy=false;render();var pe2=document.getElementById("perr");if(pe2)pe2.textContent=apiError(e)})}
 }
+document.addEventListener("change",function(e){
+ if(e.target.id=="f_mgr"){document.getElementById("mgrwrap").style.display=e.target.value.indexOf("property")>-1?"block":"none"}
+ if(e.target.id=="f_cov_other"){document.getElementById("covotherwrap").style.display=e.target.checked?"block":"none";if(e.target.checked)document.getElementById("f_cov_other_text").focus()}
+});
 document.addEventListener("input",function(e){
  if(e.target.id=="np"){var c=document.getElementById("npcount");if(c)c.textContent=e.target.value.length+"/130"}
  if(e.target.classList&&e.target.classList.contains("rp")){var pid=e.target.dataset.postid;var c2=document.getElementById("rpcount_"+pid);if(c2)c2.textContent=e.target.value.length+"/130"}
