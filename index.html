@@ -160,11 +160,15 @@ function vSignIn(){
  '<p style="text-align:center;margin-top:16px;font-size:13px"><a href="#" class="aboutlink" style="color:var(--blue);font-weight:800;text-decoration:underline">About &amp; our mission</a></p></div>';
 }
 function vForgot(){
- return '<div class="reg"><img alt="Alaska HOA and Condominium Accountability Project seal" src="'+LOGO+'"><h1>Forgot your password?</h1></div>'+
- '<div class="card" style="text-align:left">'+
- '<p style="margin:0">No problem — just email <b>'+esc(ADMIN_CONTACT)+'</b> with your name and the unit/HOA you registered with, and we\'ll get you a new password.</p>'+
- '</div>'+
- '<button class="btn light tosign" id="forgotback">Back to sign in</button>';
+ if(forgotMsg){
+  return '<div class="reg"><img alt="Alaska HOA and Condominium Accountability Project seal" src="'+LOGO+'"><h1>Check your email</h1><p class="sub">'+esc(forgotMsg)+'</p></div>'+
+  '<button class="btn light tosign" id="forgotback">Back to sign in</button>';
+ }
+ return '<div class="reg"><img alt="Alaska HOA and Condominium Accountability Project seal" src="'+LOGO+'"><h1>Reset your password</h1><p class="sub">Enter the email you signed up with and we\'ll send you a link to set a new password.</p></div><div class="form card">'+
+ '<label for="fg_email">Email</label><input id="fg_email" type="email" autocomplete="email">'+
+ '<p class="err" id="err" role="alert">'+esc(forgotErr)+'</p><button class="btn" id="forgotbtn"'+(busy?' disabled':'')+'>'+(busy?'Sending…':'Send reset link')+'</button>'+
+ '<p style="text-align:center;margin-top:12px;font-size:14px">Or email <b>'+esc(ADMIN_CONTACT)+'</b> if you\'d rather get help directly.</p>'+
+ '<p style="text-align:center;margin-top:12px;font-size:14px"><a href="#" class="tosign">Back to sign in</a></p></div>';
 }
 function vReset(){
  if(resetDone){
@@ -355,7 +359,7 @@ document.addEventListener("click",function(e){
  try{onAppClick(e)}catch(diagErr){var eb=document.getElementById("err");if(eb)eb.textContent="Something broke: "+diagErr.message;console.error(diagErr)}
 });
 function onAppClick(e){
- var t=e.target.closest("[data-t],[data-c],[data-viewreplies],[data-replyto],[data-delpost],[data-delreply],[data-editpost],[data-saveedit],[data-canceledit],#post,#regbtn,#signinbtn,#signout,#contbtn,#forgotback,#resetbtn,#resetdoneback,#notifsettings,#savenotif,.pp,.ppx,.tosign,.tosignup,.toforgot,.pwtoggle,.aboutlink");if(!t)return;if(t.classList.contains("pp")){e.preventDefault();showPolicy();return}if(t.classList.contains("ppx")){var o=document.querySelector(".ov");if(o)o.remove();return}if(t.classList.contains("aboutlink")){e.preventDefault();showAbout();return}
+ var t=e.target.closest("[data-t],[data-c],[data-viewreplies],[data-replyto],[data-delpost],[data-delreply],[data-editpost],[data-saveedit],[data-canceledit],#post,#regbtn,#signinbtn,#signout,#contbtn,#forgotbtn,#forgotback,#resetbtn,#resetdoneback,#notifsettings,#savenotif,.pp,.ppx,.tosign,.tosignup,.toforgot,.pwtoggle,.aboutlink");if(!t)return;if(t.classList.contains("pp")){e.preventDefault();showPolicy();return}if(t.classList.contains("ppx")){var o=document.querySelector(".ov");if(o)o.remove();return}if(t.classList.contains("aboutlink")){e.preventDefault();showAbout();return}
  if(t.id=="notifsettings"){showNotifSettings();return}
  if(t.classList.contains("pwtoggle")){var inp=document.getElementById(t.dataset.for);var showing=inp.type=="text";inp.type=showing?"password":"text";t.textContent=showing?"Show":"Hide";return}
  if(t.classList.contains("tosign")){e.preventDefault();mode="signin";signinErr="";render();return}
@@ -501,6 +505,20 @@ function onAppClick(e){
    })
    .catch(function(err){t.disabled=false;t.textContent="Save";if(ne)ne.textContent=apiError(err)})}
  else if(t.id=="contbtn"){mode="signin";render()}
+ else if(t.id=="forgotbtn"){
+  var fgEmail=document.getElementById("fg_email").value.trim();
+  forgotErr="";
+  if(!/^\S+@\S+\.\S+$/.test(fgEmail)){forgotErr="Enter a valid email address.";render();return}
+  busy=true;render();
+  apiFetch("/api/auth/forgot-password",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({email:fgEmail})})
+   .then(function(res){return res.json().then(function(body){return {ok:res.ok,body:body}})})
+   .then(function(out){
+    busy=false;
+    if(!out.ok){forgotErr=out.body.error||"Could not send that. Please try again.";render();return}
+    forgotMsg="If that email is registered, we've sent a link to reset your password. It expires in 1 hour.";
+    render();
+   })
+   .catch(function(err){busy=false;forgotErr=apiError(err);render()})}
  else if(t.id=="resetbtn"){
   var rsPass=document.getElementById("rs_pass").value.trim();
   resetErr="";
