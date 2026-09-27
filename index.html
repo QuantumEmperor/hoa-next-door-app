@@ -122,6 +122,7 @@ if(!authToken)reg=null;
 var mode="welcome",busy=false,regErr="",signinErr="";
 var urlResetToken=null;try{var _qp=new URLSearchParams(location.search);if(_qp.get("reset"))urlResetToken=_qp.get("reset")}catch(e){}
 if(urlResetToken)mode="reset";
+else{try{if(new URLSearchParams(location.search).get("forgot"))mode="forgot"}catch(e){}}
 var forgotErr="",forgotMsg="",resetErr="",resetDone=false;
 function vWelcome(){
  return '<div class="reg"><img alt="Alaska HOA and Condominium Accountability Project seal" src="'+LOGO+'"><h1>HOA Next Door</h1><p class="sub">A place for owners in every Alaska HOA community to see what\'s happening, share updates, and stay in the loop with their neighbors. It takes about two minutes to join.</p></div>'+
@@ -338,6 +339,7 @@ function loadReplies(postId){
 function render(){
  var hd=document.getElementById("hd"),nv=document.getElementById("nav"),mn=document.getElementById("main");
  if(mode=="reset"){hd.style.display="none";nv.style.display="none";mn.innerHTML=vReset();return}
+ if(mode=="forgot"){hd.style.display="none";nv.style.display="none";mn.innerHTML=vForgot();return}
  if(!reg){hd.style.display="none";nv.style.display="none";mn.innerHTML=(mode=="signin"?vSignIn():mode=="signedout"?vSignedOut():mode=="forgot"?vForgot():mode=="welcome"?vWelcome():vReg());
   if(mode!="signin"&&mode!="signedout"&&mode!="welcome"&&mode!="forgot"){["f_role","f_mgr","f_res","f_law"].forEach(function(id){var el=document.getElementById(id);if(el)el.value=""});}
   return}
