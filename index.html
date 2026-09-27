@@ -69,10 +69,12 @@ label{font-size:14px;font-weight:700;display:block;margin-bottom:4px}
 .toast{position:fixed;left:50%;bottom:84px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:10px;font-weight:700;font-size:14px}
 h2{font-size:18px;margin:2px 0 10px}
 .empty{color:var(--mute);text-align:center;padding:24px 0}
-header{display:flex;align-items:center;gap:12px}
-header img{width:46px;height:46px;border-radius:50%;flex:none;background:#fff}
-header div{flex:1}
-header button{border:1px solid rgba(255,255,255,.55);background:none;color:#fff;font:inherit;font-size:12px;font-weight:700;border-radius:8px;padding:4px 8px;cursor:pointer}
+header{display:flex;flex-direction:column;gap:8px}
+.hdtop{display:flex;align-items:center;gap:12px}
+.hdtop img{width:46px;height:46px;border-radius:50%;flex:none;background:#fff}
+.hdtop div{flex:1}
+.hdbtns{display:flex;gap:6px}
+.hdbtns button{flex:1;border:1px solid rgba(255,255,255,.55);background:none;color:#fff;font:inherit;font-size:11px;font-weight:700;border-radius:7px;padding:5px 4px;cursor:pointer}
 .reg{text-align:center}
 .reg img{width:132px;height:132px;border-radius:50%;margin:6px auto 8px;display:block}
 .reg h1{font-size:23px;margin:0 0 4px}
@@ -372,7 +374,7 @@ function render(){
   if(mode!="signin"&&mode!="signedout"&&mode!="welcome"&&mode!="forgot"){["f_role","f_mgr","f_res","f_law"].forEach(function(id){var el=document.getElementById(id);if(el)el.value=""});}
   return}
  hd.style.display="flex";nv.style.display="none";
- hd.innerHTML='<img alt="Alaska HOA and Condominium Accountability Project seal" src="'+LOGO+'"><div><b>HOA Next Door</b><small>Your community (only visible to you): '+esc(reg.condo)+', '+esc(reg.units)+' units</small></div><button id="editinfo" style="margin-right:6px">Edit info</button><button id="notifsettings" style="margin-right:6px">Notifications</button><button id="signout">Sign out</button>';
+ hd.innerHTML='<div class="hdtop"><img alt="Alaska HOA and Condominium Accountability Project seal" src="'+LOGO+'"><div><b>HOA Next Door</b><small>Your community (only visible to you): '+esc(reg.condo)+', '+esc(reg.units)+' units</small></div></div><div class="hdbtns"><button id="editinfo">Edit info</button><button id="notifsettings">Notifications</button><button id="signout">Sign out</button></div>';
  var v={feed:vFeed}[cur];
  mn.innerHTML=v();nav();
 }
