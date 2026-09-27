@@ -48,7 +48,7 @@ function vLogin(err,busy){
 }
 
 function vList(items){
- var top='<div class="topbar"><h1>Registrations ('+items.length+')</h1><button class="small" id="refreshbtn">Refresh</button></div>';
+ var top='<div class="topbar"><h1>Registrations ('+items.length+')</h1><div><button class="small" id="backupbtn" style="margin-right:8px">Download backup</button><button class="small" id="refreshbtn">Refresh</button></div></div>';
  if(!items.length)return top+'<div class="empty">No registrations yet.</div>';
  return top+items.map(function(r){
   var covers=(r.covers||[]).join(", ")||"—";
@@ -112,6 +112,7 @@ function loadRegs(){
 document.addEventListener("click",function(e){
  if(e.target.id=="loginbtn")doLogin();
  if(e.target.id=="refreshbtn")loadRegs();
+ if(e.target.id=="backupbtn")downloadBackup();
  if(e.target.classList&&e.target.classList.contains("delbtn")){
   var id=e.target.dataset.id,name=e.target.dataset.name;
   if(!confirm("Delete the registration for "+name+"? This cannot be undone."))return;
@@ -141,6 +142,27 @@ document.addEventListener("click",function(e){
    .catch(function(){alert("Could not reach the server. Try again.");e.target.disabled=false;e.target.textContent="Reset password"});
  }
 });
+function downloadBackup(){
+ var btn=document.getElementById("backupbtn");
+ if(btn){btn.disabled=true;btn.textContent="Preparing…"}
+ apiFetch("/api/auth/admin/backup",{headers:{"Authorization":"Bearer "+token}})
+  .then(function(res){
+   if(!res.ok)return res.json().then(function(body){throw new Error(body.error||"Could not create the backup.")});
+   return res.blob();
+  })
+  .then(function(blob){
+   var url=URL.createObjectURL(blob);
+   var a=document.createElement("a");
+   a.href=url;
+   a.download="hoa-next-door-backup-"+new Date().toISOString().slice(0,10)+".json";
+   document.body.appendChild(a);
+   a.click();
+   a.remove();
+   setTimeout(function(){URL.revokeObjectURL(url)},1000);
+  })
+  .catch(function(e){alert(e.message||"Could not reach the server. Try again.")})
+  .then(function(){if(btn){btn.disabled=false;btn.textContent="Download backup"}});
+}
 document.addEventListener("keydown",function(e){
  if(e.key=="Enter"&&(e.target.id=="a_email"||e.target.id=="a_pass"))doLogin();
 });
