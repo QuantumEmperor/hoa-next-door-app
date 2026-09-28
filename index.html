@@ -409,7 +409,7 @@ function render(){
   return}
  if(mode=="profile"){hd.style.display="none";nv.style.display="none";mn.innerHTML=vProfile();return}
  hd.style.display="flex";nv.style.display="none";
- hd.innerHTML='<div class="hdtop"><img alt="Alaska HOA Accountability Project seal" src="'+LOGO+'"><div><b>HOA Next Door</b><small>Neighbors posts</small></div></div><div class="hdbtns"><button id="editinfo">Edit info</button><button id="notifsettings">Notifications</button><button id="signout">Sign out</button></div>';
+ hd.innerHTML='<div class="hdtop"><img alt="Alaska HOA Accountability Project seal" src="'+LOGO+'"><div><b>HOA Next Door</b><small>Neighbors\' posts</small></div></div><div class="hdbtns"><button id="editinfo">Edit info</button><button id="notifsettings">Notifications</button><button id="signout">Sign out</button></div>';
  var v={feed:vFeed}[cur];
  mn.innerHTML=v();nav();
 }
