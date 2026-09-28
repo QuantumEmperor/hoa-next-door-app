@@ -79,6 +79,11 @@ header{display:flex;flex-direction:column;gap:8px}
 .reg img{width:132px;height:132px;border-radius:50%;margin:6px auto 8px;display:block}
 .reg h1{font-size:23px;margin:0 0 4px}
 .reg p.sub{color:var(--mute);margin:0 0 16px;font-size:15px}
+.reg-row{display:flex;align-items:center;gap:14px;text-align:left}
+.reg-row img{width:64px;height:64px;margin:0;flex:none}
+.reg-row .reg-title{flex:1}
+.reg-row .reg-title h1{margin:0 0 2px}
+.reg-row .reg-title p.sub{margin:0}
 .form{text-align:left}
 .pfwrap{margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--line)}
 .pfwrap label{margin:0 0 6px}
@@ -135,8 +140,8 @@ function vWelcome(){
  '<p style="text-align:center;margin-top:16px;font-size:13px"><a href="#" class="aboutlink" style="color:var(--blue);font-weight:800;text-decoration:underline">About &amp; our mission</a></p>';
 }
 function vReg(){
- return '<div class="reg"><img alt="Alaska HOA Accountability Project seal" src="'+LOGO+'"><h1>HOA Next Door</h1><p class="sub">Sign up to join your HOA community.</p></div><div class="form card">'+
- '<div class="card" style="background:var(--blueSoft);border:none;margin-bottom:16px"><p style="margin:0;font-size:14px">Your answers below are private and only visible to the site administrator — never to other members. If you post in Neighbors, other members will only ever see your first name and last initial (e.g. "Sarah M.").</p></div>'+
+ return '<div class="reg reg-row"><img alt="Alaska HOA Accountability Project seal" src="'+LOGO+'"><div class="reg-title"><h1>HOA Next Door</h1><p class="sub">Sign up to join your HOA community.</p></div></div><div class="form card">'+
+ '<div class="card" style="background:var(--blueSoft);border:none;margin-bottom:16px"><p style="margin:0;font-size:12px">Your answers below are private and only visible to the site administrator — never to other members. If you post in Neighbors, other members will only ever see your first name and last initial (e.g. "Sarah M.").</p></div>'+
  '<div class="two"><div><label for="f_first">First name</label><input id="f_first" autocomplete="off"></div><div><label for="f_last">Last name</label><input id="f_last" autocomplete="off"></div></div>'+
  '<label for="f_email">Email</label><input id="f_email" type="email" autocomplete="off">'+
  '<label for="f_pass">Password</label><div class="pwrow"><input id="f_pass" type="password" autocomplete="new-password" placeholder="At least 8 characters"><button type="button" class="pwtoggle" data-for="f_pass">Show</button></div>'+
