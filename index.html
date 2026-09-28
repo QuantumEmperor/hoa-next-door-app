@@ -119,6 +119,7 @@ window.addEventListener("error",function(ev){
 });
 var tabs=[["feed","💬","Neighbors"]];
 var cur="feed",cat="All";
+var regDraft=null; // remembers what's typed on the sign-up form so a validation error doesn't wipe it
 var feed=[],feedLoaded=false,feedLoading=false,feedError="";
 var openReplyId=null,repliesByPost={},repliesLoadingId=null,replyBusy=false,replyErr="";
 var editPostId=null,editBusy=false;
@@ -140,14 +141,16 @@ function vWelcome(){
  '<p style="text-align:center;margin-top:16px;font-size:13px"><a href="#" class="aboutlink" style="color:var(--blue);font-weight:800;text-decoration:underline">About &amp; our mission</a></p>';
 }
 function vReg(){
+ var d=regDraft||{};
+ var roleOpts=["Owner who lives here","Owner who rents it out","Board member"];
  return '<div class="reg reg-row"><img alt="Alaska HOA Accountability Project seal" src="'+LOGO+'"><div class="reg-title"><h1>HOA Next Door</h1><p class="sub">Sign up to join your HOA community.</p></div></div><div class="form card">'+
  '<div class="card" style="background:var(--blueSoft);border:none;margin-bottom:16px"><p style="margin:0;font-size:12px">Your answers below are private and only visible to the site administrator — never to other members. If you post in Neighbors, other members will only see your first name and last initial (e.g. "Sarah M").</p></div>'+
- '<div class="two"><div><label for="f_first">First name</label><input id="f_first" autocomplete="off"></div><div><label for="f_last">Last name</label><input id="f_last" autocomplete="off"></div></div>'+
- '<label for="f_email">Email</label><input id="f_email" type="email" autocomplete="off">'+
- '<label for="f_pass">Password</label><div class="pwrow"><input id="f_pass" type="password" autocomplete="new-password" placeholder="At least 8 characters"><button type="button" class="pwtoggle" data-for="f_pass">Show</button></div>'+
- '<label for="f_condo">Name of HOA</label><input id="f_condo" autocomplete="off">'+
- '<div class="two"><div><label for="f_role">You are a</label><select id="f_role" autocomplete="off"><option value="" selected disabled>Select one</option><option>Owner who lives here</option><option>Owner who rents it out</option><option>Board member</option></select></div><div><label for="f_unit">Unit number <span style="color:var(--mute);font-weight:400">(optional)</span></label><input id="f_unit" autocomplete="off"></div></div>'+
- '<label class="opt" style="font-size:13px;font-weight:400"><input type="checkbox" id="f_news"> Send me the HOA Next Door newsletter (optional)</label><label class="opt" style="font-size:13px;font-weight:400"><input type="checkbox" id="f_agree"> I have read and agree to the <a href="#" class="pp">Privacy Policy</a></label>'+'<p class="err" id="err" role="alert">'+esc(regErr)+'</p><button class="btn" id="regbtn"'+(busy?' disabled':'')+'>'+(busy?'Joining…':'Join my community')+'</button>'+
+ '<div class="two"><div><label for="f_first">First name</label><input id="f_first" autocomplete="off" value="'+esc(d.first||"")+'"></div><div><label for="f_last">Last name</label><input id="f_last" autocomplete="off" value="'+esc(d.last||"")+'"></div></div>'+
+ '<label for="f_email">Email</label><input id="f_email" type="email" autocomplete="off" value="'+esc(d.email||"")+'">'+
+ '<label for="f_pass">Password</label><div class="pwrow"><input id="f_pass" type="password" autocomplete="new-password" placeholder="At least 8 characters" value="'+esc(d.pass||"")+'"><button type="button" class="pwtoggle" data-for="f_pass">Show</button></div>'+
+ '<label for="f_condo">Name of HOA</label><input id="f_condo" autocomplete="off" value="'+esc(d.condo||"")+'">'+
+ '<div class="two"><div><label for="f_role">You are a</label><select id="f_role" autocomplete="off"><option value="" disabled'+(!d.role?' selected':'')+'>Select one</option>'+roleOpts.map(function(o){return '<option'+(o===d.role?' selected':'')+'>'+o+'</option>'}).join("")+'</select></div><div><label for="f_unit">Unit number <span style="color:var(--mute);font-weight:400">(optional)</span></label><input id="f_unit" autocomplete="off" value="'+esc(d.unit||"")+'"></div></div>'+
+ '<label class="opt" style="font-size:13px;font-weight:400"><input type="checkbox" id="f_news"'+(d.news?' checked':'')+'> Send me the HOA Next Door newsletter (optional)</label><label class="opt" style="font-size:13px;font-weight:400"><input type="checkbox" id="f_agree"'+(d.agree?' checked':'')+'> I have read and agree to the <a href="#" class="pp">Privacy Policy</a></label>'+'<p class="err" id="err" role="alert">'+esc(regErr)+'</p><button class="btn" id="regbtn"'+(busy?' disabled':'')+'>'+(busy?'Joining…':'Join my community')+'</button>'+
  '<p style="text-align:center;margin-top:12px;font-size:14px">Already registered? <a href="#" class="tosign">Sign in</a></p>'+
  '<p style="text-align:center;margin-top:16px;font-size:13px"><a href="#" class="aboutlink" style="color:var(--blue);font-weight:800;text-decoration:underline">About &amp; our mission</a></p></div>';
 }
@@ -405,7 +408,7 @@ function render(){
  if(mode=="reset"){hd.style.display="none";nv.style.display="none";mn.innerHTML=vReset();return}
  if(mode=="forgot"){hd.style.display="none";nv.style.display="none";mn.innerHTML=vForgot();return}
  if(!reg){hd.style.display="none";nv.style.display="none";mn.innerHTML=(mode=="signin"?vSignIn():mode=="signedout"?vSignedOut():mode=="forgot"?vForgot():mode=="welcome"?vWelcome():vReg());
-  if(mode!="signin"&&mode!="signedout"&&mode!="welcome"&&mode!="forgot"){["f_role","f_mgr","f_res","f_law"].forEach(function(id){var el=document.getElementById(id);if(el)el.value=""});}
+  if(mode!="signin"&&mode!="signedout"&&mode!="welcome"&&mode!="forgot"){["f_role","f_mgr","f_res","f_law"].forEach(function(id){var el=document.getElementById(id);if(el)el.value=(id=="f_role"&&regDraft&&regDraft.role)?regDraft.role:""});}
   return}
  if(mode=="profile"){hd.style.display="none";nv.style.display="none";mn.innerHTML=vProfile();return}
  hd.style.display="flex";nv.style.display="none";
@@ -511,6 +514,7 @@ function onAppClick(e){
   var g=function(i){return document.getElementById(i).value.trim()};
   var fname=g("f_first"),lname=g("f_last");
   var r={name:(fname+" "+lname).trim(),email:g("f_email"),password:g("f_pass"),unit:g("f_unit"),role:g("f_role"),condo:g("f_condo"),newsletter:document.getElementById("f_news").checked,agreedToPrivacyPolicy:document.getElementById("f_agree").checked};
+  regDraft={first:fname,last:lname,email:r.email,pass:r.password,condo:r.condo,role:r.role,unit:r.unit,news:r.newsletter,agree:r.agreedToPrivacyPolicy};
   regErr="";
   if(!fname||!lname){regErr="Please fill in your first and last name.";render();return}
   if(!r.condo){regErr="Please fill in the name of your HOA.";render();return}
@@ -524,7 +528,7 @@ function onAppClick(e){
    .then(function(out){
     busy=false;
     if(!out.ok){regErr=out.body.error||"Could not sign you up.";render();return}
-    regErr="";
+    regErr="";regDraft=null;
     authToken=out.body.token;reg=out.body.user;
     try{localStorage.setItem("hoand_token",authToken);localStorage.setItem("hoand_user",JSON.stringify(reg))}catch(x){}
     mode="profile";render();document.getElementById("main").scrollTop=0;toast("Welcome, "+reg.name.split(" ")[0]);
