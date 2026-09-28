@@ -141,7 +141,7 @@ function vWelcome(){
 }
 function vReg(){
  return '<div class="reg reg-row"><img alt="Alaska HOA Accountability Project seal" src="'+LOGO+'"><div class="reg-title"><h1>HOA Next Door</h1><p class="sub">Sign up to join your HOA community.</p></div></div><div class="form card">'+
- '<div class="card" style="background:var(--blueSoft);border:none;margin-bottom:16px"><p style="margin:0;font-size:12px">Your answers below are private and only visible to the site administrator — never to other members. If you post in Neighbors, other members will only ever see your first name and last initial (e.g. "Sarah M.").</p></div>'+
+ '<div class="card" style="background:var(--blueSoft);border:none;margin-bottom:16px"><p style="margin:0;font-size:12px">Your answers below are private and only visible to the site administrator — never to other members. If you post in Neighbors, other members will only see your first name and last initial (e.g. "Sarah M").</p></div>'+
  '<div class="two"><div><label for="f_first">First name</label><input id="f_first" autocomplete="off"></div><div><label for="f_last">Last name</label><input id="f_last" autocomplete="off"></div></div>'+
  '<label for="f_email">Email</label><input id="f_email" type="email" autocomplete="off">'+
  '<label for="f_pass">Password</label><div class="pwrow"><input id="f_pass" type="password" autocomplete="new-password" placeholder="At least 8 characters"><button type="button" class="pwtoggle" data-for="f_pass">Show</button></div>'+
@@ -409,7 +409,7 @@ function render(){
   return}
  if(mode=="profile"){hd.style.display="none";nv.style.display="none";mn.innerHTML=vProfile();return}
  hd.style.display="flex";nv.style.display="none";
- hd.innerHTML='<div class="hdtop"><img alt="Alaska HOA Accountability Project seal" src="'+LOGO+'"><div><b>HOA Next Door</b><small>Your community (only visible to you and the admin)</small></div></div><div class="hdbtns"><button id="editinfo">Edit info</button><button id="notifsettings">Notifications</button><button id="signout">Sign out</button></div>';
+ hd.innerHTML='<div class="hdtop"><img alt="Alaska HOA Accountability Project seal" src="'+LOGO+'"><div><b>HOA Next Door</b><small>Neighbors posts</small></div></div><div class="hdbtns"><button id="editinfo">Edit info</button><button id="notifsettings">Notifications</button><button id="signout">Sign out</button></div>';
  var v={feed:vFeed}[cur];
  mn.innerHTML=v();nav();
 }
