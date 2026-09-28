@@ -56,17 +56,18 @@ function vList(items){
   var flags="";
   if(r.lawsuit==="Yes")flags+='<span class="flag">Lawsuit: Yes</span>';
   if(r.reserve==="No")flags+='<span class="flag">No reserve fund</span>';
+  var na="<span style=\"color:var(--mute)\">Not provided yet</span>";
   return '<div class="reg"><div class="name">'+esc(r.name)+flags+'</div>'+
-   '<div class="meta">'+esc(r.email)+' · Unit '+esc(r.unit)+' · '+esc(r.role)+' · Registered '+esc(when)+'</div>'+
+   '<div class="meta">'+esc(r.email)+(r.unit?' · Unit '+esc(r.unit):'')+' · '+esc(r.role)+' · Registered '+esc(when)+'</div>'+
    '<div class="row">'+
     '<div><b>Condo</b>'+esc(r.condo)+'</div>'+
-    '<div><b>Units</b>'+esc(r.units)+'</div>'+
-    '<div><b>Dues</b>$'+esc(r.dues)+'/mo</div>'+
-    '<div><b>Dues cover</b>'+esc(covers)+'</div>'+
-    '<div><b>Managed by</b>'+esc(r.mgr)+(r.mgrName?" — "+esc(r.mgrName):"")+'</div>'+
-    '<div><b>Reserve fund</b>'+esc(r.reserve)+'</div>'+
-    '<div><b>Lawsuit</b>'+esc(r.lawsuit)+'</div>'+
-    '<div><b>Quorum</b>'+esc(r.quorum)+'</div>'+
+    '<div><b>Units</b>'+(r.units?esc(r.units):na)+'</div>'+
+    '<div><b>Dues</b>'+(r.dues!=null?'$'+esc(r.dues)+'/mo':na)+'</div>'+
+    '<div><b>Dues cover</b>'+(covers!=='—'?esc(covers):na)+'</div>'+
+    '<div><b>Managed by</b>'+(r.mgr?esc(r.mgr)+(r.mgrName?" — "+esc(r.mgrName):""):na)+'</div>'+
+    '<div><b>Reserve fund</b>'+(r.reserve?esc(r.reserve):na)+'</div>'+
+    '<div><b>Lawsuit</b>'+(r.lawsuit?esc(r.lawsuit):na)+'</div>'+
+    '<div><b>Quorum</b>'+(r.quorum?esc(r.quorum):na)+'</div>'+
     '<div><b>Newsletter</b>'+(r.newsletter?"Yes":"No")+'</div>'+
    '</div>'+
    '<button class="small pwbtn" data-id="'+esc(r._id)+'" data-name="'+esc(r.name)+'" style="margin-top:10px">Reset password</button> '+

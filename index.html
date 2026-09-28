@@ -80,6 +80,9 @@ header{display:flex;flex-direction:column;gap:8px}
 .reg h1{font-size:23px;margin:0 0 4px}
 .reg p.sub{color:var(--mute);margin:0 0 16px;font-size:15px}
 .form{text-align:left}
+.pfwrap{margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--line)}
+.pfwrap.skipped{opacity:.45}
+.pfwrap label{margin:0}
 .checks{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
 .checks label{display:flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--card);border-radius:99px;padding:5px 12px;font-weight:600;margin:0;cursor:pointer}
 input[type=checkbox]{width:auto;margin:0}
@@ -133,23 +136,14 @@ function vWelcome(){
  '<p style="text-align:center;margin-top:16px;font-size:13px"><a href="#" class="aboutlink" style="color:var(--blue);font-weight:800;text-decoration:underline">About &amp; our mission</a></p>';
 }
 function vReg(){
- var dues=["Water","Sewer","Garbage","Heat","Snow removal","Insurance","Reserves","Landscaping"];
  return '<div class="reg"><img alt="Alaska HOA Accountability Project seal" src="'+LOGO+'"><h1>HOA Next Door</h1><p class="sub">Sign up to join your HOA community.</p></div><div class="form card">'+
  '<div class="card" style="background:var(--blueSoft);border:none;margin-bottom:16px"><p style="margin:0;font-size:14px">Your answers below are private and only visible to the site administrator — never to other members. If you post in Neighbors, other members will only ever see your first name and last initial (e.g. "Sarah M.").</p></div>'+
- '<h2>About you</h2>'+
  '<div class="two"><div><label for="f_first">First name</label><input id="f_first" autocomplete="off"></div><div><label for="f_last">Last name</label><input id="f_last" autocomplete="off"></div></div>'+
  '<label for="f_email">Email</label><input id="f_email" type="email" autocomplete="off">'+
  '<label for="f_pass">Password</label><div class="pwrow"><input id="f_pass" type="password" autocomplete="new-password" placeholder="At least 8 characters"><button type="button" class="pwtoggle" data-for="f_pass">Show</button></div>'+
- '<div class="two"><div><label for="f_unit">Your unit number</label><input id="f_unit" autocomplete="off"></div><div><label for="f_role">You are a</label><select id="f_role" autocomplete="off"><option value="" selected disabled>Select one</option><option>Owner who lives here</option><option>Owner who rents it out</option><option>Renter</option><option>Board member</option></select></div></div>'+
  '<label for="f_condo">Name of HOA</label><input id="f_condo" autocomplete="off">'+
- '<div class="two"><div><label for="f_units">Number of units</label><input id="f_units" type="text" inputmode="numeric" autocomplete="off" placeholder="e.g. 24"></div><div><label for="f_dues">Monthly dues per unit ($)</label><input id="f_dues" type="text" inputmode="decimal" autocomplete="off" placeholder="e.g. 250"></div></div>'+
- '<label>What do the dues cover?</label><div class="checks">'+dues.map(function(d){return '<label><input type="checkbox" class="f_cov" value="'+d+'">'+d+'</label>'}).join("")+'<label><input type="checkbox" id="f_cov_other">Other</label></div>'+
- '<div id="covotherwrap" style="display:none"><input id="f_cov_other_text" autocomplete="off" placeholder="What else do the dues cover?"></div>'+
- '<label for="f_mgr">Who manages it?</label><select id="f_mgr" autocomplete="off"><option value="" selected disabled>Select one</option><option>The board (self-managed)</option><option>A property management company</option><option>Not sure</option></select>'+
- '<div id="mgrwrap" style="display:none"><label for="f_mgrname">Name of property management company</label><input id="f_mgrname" autocomplete="off"></div>'+'<label for="f_res">Does the association have a reserve fund?</label><select id="f_res" autocomplete="off"><option value="" selected disabled>Select one</option><option>Yes</option><option>No</option><option>Not sure</option></select>'+
- '<label for="f_law">Is your HOA currently in a lawsuit?</label><select id="f_law" autocomplete="off"><option value="" selected disabled>Select one</option><option>Yes</option><option>No</option><option>Prefer not to say</option></select>'+
- '<label for="f_quorum">How many owners are needed for a quorum at a meeting?</label><input id="f_quorum" type="text" inputmode="numeric" autocomplete="off" placeholder="e.g. 10, or a %, or not sure">'+
- '<label class="opt"><input type="checkbox" id="f_news"> Send me the HOA Next Door newsletter (optional)</label><label class="opt"><input type="checkbox" id="f_agree"> I have read and agree to the <a href="#" class="pp">Privacy Policy</a></label>'+'<p class="err" id="err" role="alert">'+esc(regErr)+'</p><button class="btn" id="regbtn"'+(busy?' disabled':'')+'>'+(busy?'Joining…':'Join my community')+'</button>'+
+ '<div class="two"><div><label for="f_role">You are a</label><select id="f_role" autocomplete="off"><option value="" selected disabled>Select one</option><option>Owner who lives here</option><option>Owner who rents it out</option><option>Renter</option><option>Board member</option></select></div><div><label for="f_unit">Unit number <span style="color:var(--mute);font-weight:400">(optional)</span></label><input id="f_unit" autocomplete="off"></div></div>'+
+ '<label class="opt" style="font-size:13px;font-weight:400"><input type="checkbox" id="f_news"> Send me the HOA Next Door newsletter (optional)</label><label class="opt" style="font-size:13px;font-weight:400"><input type="checkbox" id="f_agree"> I have read and agree to the <a href="#" class="pp">Privacy Policy</a></label>'+'<p class="err" id="err" role="alert">'+esc(regErr)+'</p><button class="btn" id="regbtn"'+(busy?' disabled':'')+'>'+(busy?'Joining…':'Join my community')+'</button>'+
  '<p style="text-align:center;margin-top:12px;font-size:14px">Already registered? <a href="#" class="tosign">Sign in</a></p>'+
  '<p style="text-align:center;margin-top:16px;font-size:13px"><a href="#" class="aboutlink" style="color:var(--blue);font-weight:800;text-decoration:underline">About &amp; our mission</a></p></div>';
 }
@@ -192,6 +186,27 @@ function vSignedOut(){
  '</div>'+
  '<button class="btn" id="contbtn">Continue</button>'+
  '<p style="text-align:center;margin-top:16px;font-size:13px"><a href="#" class="aboutlink" style="color:var(--blue);font-weight:800;text-decoration:underline">About &amp; our mission</a></p>';
+}
+function pfField(fieldId,labelHtml,inputHtml){
+ return '<div class="pfwrap" id="pf_wrap_'+fieldId+'">'+
+ '<div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px"><label style="margin-bottom:0" for="f_'+fieldId+'">'+labelHtml+'</label>'+
+ '<a href="#" class="skiplink" data-field="'+fieldId+'" style="font-size:12px;color:var(--mute);white-space:nowrap">Skip for now</a></div>'+
+ inputHtml+'</div>';
+}
+function vProfile(){
+ var dues=["Water","Sewer","Garbage","Heat","Snow removal","Insurance","Reserves","Landscaping"];
+ return '<div class="reg"><img alt="Alaska HOA Accountability Project seal" src="'+LOGO+'"><h1>Let\'s build your HOA\'s profile</h1><p class="sub">The more information your community contributes, the more useful HOA Next Door becomes. You can answer these now or come back anytime from "Edit info."</p></div><div class="form card">'+
+ pfField('units','Number of units','<input id="f_units" type="text" inputmode="numeric" autocomplete="off" placeholder="e.g. 24">')+
+ pfField('dues','Monthly dues per unit ($)','<input id="f_dues" type="text" inputmode="decimal" autocomplete="off" placeholder="e.g. 250">')+
+ pfField('covers','What do the dues cover?','<div class="checks">'+dues.map(function(d){return '<label><input type="checkbox" class="f_cov" value="'+d+'">'+d+'</label>'}).join("")+'<label><input type="checkbox" id="f_cov_other">Other</label></div><div id="covotherwrap" style="display:none"><input id="f_cov_other_text" autocomplete="off" placeholder="What else do the dues cover?"></div>')+
+ pfField('mgr','Who manages it?','<select id="f_mgr" autocomplete="off"><option value="" selected disabled>Select one</option><option>The board (self-managed)</option><option>A property management company</option><option>Not sure</option></select><div id="mgrwrap" style="display:none"><label for="f_mgrname">Name of property management company</label><input id="f_mgrname" autocomplete="off"></div>')+
+ pfField('res','Does the association have a reserve fund?','<select id="f_res" autocomplete="off"><option value="" selected disabled>Select one</option><option>Yes</option><option>No</option><option>Not sure</option></select>')+
+ pfField('law','Is your HOA currently in a lawsuit?','<select id="f_law" autocomplete="off"><option value="" selected disabled>Select one</option><option>Yes</option><option>No</option><option>Prefer not to say</option></select>')+
+ pfField('quorum','How many owners are needed for a quorum at a meeting?','<input id="f_quorum" type="text" inputmode="numeric" autocomplete="off" placeholder="e.g. 10, or a %, or not sure">')+
+ '<p class="err" id="err" role="alert">'+esc(regErr)+'</p>'+
+ '<button class="btn" id="saveprofile"'+(busy?' disabled':'')+'>'+(busy?'Saving…':'Save profile')+'</button>'+
+ '<button class="btn light" id="skipprofile" style="margin-top:8px">I\'ll do this later</button>'+
+ '</div>';
 }
 function showEditInfo(){
  if(document.querySelector(".ov"))return;
@@ -385,8 +400,10 @@ function render(){
  if(!reg){hd.style.display="none";nv.style.display="none";mn.innerHTML=(mode=="signin"?vSignIn():mode=="signedout"?vSignedOut():mode=="forgot"?vForgot():mode=="welcome"?vWelcome():vReg());
   if(mode!="signin"&&mode!="signedout"&&mode!="welcome"&&mode!="forgot"){["f_role","f_mgr","f_res","f_law"].forEach(function(id){var el=document.getElementById(id);if(el)el.value=""});}
   return}
+ if(mode=="profile"){hd.style.display="none";nv.style.display="none";mn.innerHTML=vProfile();return}
  hd.style.display="flex";nv.style.display="none";
- hd.innerHTML='<div class="hdtop"><img alt="Alaska HOA Accountability Project seal" src="'+LOGO+'"><div><b>HOA Next Door</b><small>Your community (only visible to you): '+esc(reg.condo)+', '+esc(reg.units)+' units</small></div></div><div class="hdbtns"><button id="editinfo">Edit info</button><button id="notifsettings">Notifications</button><button id="signout">Sign out</button></div>';
+ var unitsBit=(reg.units?', '+esc(reg.units)+' units':'');
+ hd.innerHTML='<div class="hdtop"><img alt="Alaska HOA Accountability Project seal" src="'+LOGO+'"><div><b>HOA Next Door</b><small>Your community (only visible to you): '+esc(reg.condo)+unitsBit+'</small></div></div><div class="hdbtns"><button id="editinfo">Edit info</button><button id="notifsettings">Notifications</button><button id="signout">Sign out</button></div>';
  var v={feed:vFeed}[cur];
  mn.innerHTML=v();nav();
 }
@@ -403,7 +420,19 @@ document.addEventListener("click",function(e){
  try{onAppClick(e)}catch(diagErr){var eb=document.getElementById("err");if(eb)eb.textContent="Something broke: "+diagErr.message;console.error(diagErr)}
 });
 function onAppClick(e){
- var t=e.target.closest("[data-t],[data-c],[data-viewreplies],[data-replyto],[data-delpost],[data-delreply],[data-editpost],[data-saveedit],[data-canceledit],#post,#regbtn,#signinbtn,#signout,#contbtn,#forgotbtn,#forgotback,#resetbtn,#resetdoneback,#notifsettings,#savenotif,#editinfo,#saveeditinfo,.pp,.ppx,.tosign,.tosignup,.toforgot,.pwtoggle,.aboutlink");if(!t)return;if(t.classList.contains("pp")){e.preventDefault();showPolicy();return}if(t.classList.contains("ppx")){var o=document.querySelector(".ov");if(o)o.remove();return}if(t.classList.contains("aboutlink")){e.preventDefault();showAbout();return}
+ var t=e.target.closest("[data-t],[data-c],[data-viewreplies],[data-replyto],[data-delpost],[data-delreply],[data-editpost],[data-saveedit],[data-canceledit],#post,#regbtn,#signinbtn,#signout,#contbtn,#forgotbtn,#forgotback,#resetbtn,#resetdoneback,#notifsettings,#savenotif,#editinfo,#saveeditinfo,#saveprofile,#skipprofile,.skiplink,.pp,.ppx,.tosign,.tosignup,.toforgot,.pwtoggle,.aboutlink");if(!t)return;if(t.classList.contains("pp")){e.preventDefault();showPolicy();return}if(t.classList.contains("ppx")){var o=document.querySelector(".ov");if(o)o.remove();return}if(t.classList.contains("aboutlink")){e.preventDefault();showAbout();return}
+ if(t.classList.contains("skiplink")){
+  e.preventDefault();
+  var fld=t.dataset.field;var wrap=document.getElementById("pf_wrap_"+fld);if(!wrap)return;
+  var willSkip=!wrap.classList.contains("skipped");
+  wrap.classList.toggle("skipped",willSkip);
+  t.textContent=willSkip?"Undo":"Skip for now";
+  [].slice.call(wrap.querySelectorAll("input,select")).forEach(function(el){
+   el.disabled=willSkip;
+   if(willSkip){if(el.type==="checkbox")el.checked=false;else el.value=""}
+  });
+  if(willSkip){var mw=document.getElementById("mgrwrap");if(mw)mw.style.display="none";var cw=document.getElementById("covotherwrap");if(cw)cw.style.display="none"}
+  return}
  if(t.id=="notifsettings"){showNotifSettings();return}
  if(t.id=="editinfo"){showEditInfo();return}
  if(t.classList.contains("pwtoggle")){var inp=document.getElementById(t.dataset.for);var showing=inp.type=="text";inp.type=showing?"password":"text";t.textContent=showing?"Show":"Hide";return}
@@ -486,24 +515,14 @@ function onAppClick(e){
  }
  else if(t.id=="regbtn"){
   var g=function(i){return document.getElementById(i).value.trim()};
-  var cov=[].slice.call(document.querySelectorAll(".f_cov:checked")).map(function(c){return c.value});
-  if(document.getElementById("f_cov_other").checked){var ot=document.getElementById("f_cov_other_text").value.trim();if(ot)cov.push(ot)}
   var fname=g("f_first"),lname=g("f_last");
-  var r={name:(fname+" "+lname).trim(),email:g("f_email"),password:g("f_pass"),unit:g("f_unit"),role:g("f_role"),condo:g("f_condo"),units:g("f_units"),dues:g("f_dues"),covers:cov,mgr:g("f_mgr"),mgrName:(g("f_mgr").indexOf("property")>-1?g("f_mgrname"):""),reserve:g("f_res"),lawsuit:g("f_law"),quorum:g("f_quorum"),newsletter:document.getElementById("f_news").checked,agreedToPrivacyPolicy:document.getElementById("f_agree").checked};
+  var r={name:(fname+" "+lname).trim(),email:g("f_email"),password:g("f_pass"),unit:g("f_unit"),role:g("f_role"),condo:g("f_condo"),newsletter:document.getElementById("f_news").checked,agreedToPrivacyPolicy:document.getElementById("f_agree").checked};
   regErr="";
   if(!fname||!lname){regErr="Please fill in your first and last name.";render();return}
-  if(!r.unit||!r.condo){regErr="Please fill in your unit number and HOA name.";render();return}
+  if(!r.condo){regErr="Please fill in the name of your HOA.";render();return}
   if(!/^\S+@\S+\.\S+$/.test(r.email)){regErr="Enter a valid email address.";render();return}
   if(!r.password||r.password.length<8){regErr="Password must be at least 8 characters.";render();return}
   if(!r.role){regErr="Please select what you are (owner, renter, or board member).";render();return}
-  if(!(+r.units>0)){regErr="Enter how many units are in your HOA.";render();return}
-  if(r.dues===""||!(+r.dues>=0)){regErr="Enter the monthly dues, even if it is 0.";render();return}
-  if(!cov.length){regErr="Select at least one thing the dues cover.";render();return}
-  if(!r.mgr){regErr="Please select who manages the HOA.";render();return}
-  if(r.mgr.indexOf("property")>-1&&!r.mgrName){regErr="Enter the name of your property management company.";render();return}
-  if(!r.reserve){regErr="Please answer whether the association has a reserve fund.";render();return}
-  if(!r.lawsuit){regErr="Please answer whether the association is in a lawsuit.";render();return}
-  if(!r.quorum){regErr="Please answer how many owners are needed for a quorum.";render();return}
   if(!r.agreedToPrivacyPolicy){regErr="Please agree to the Privacy Policy to continue.";render();return}
   busy=true;render();
   apiFetch("/api/auth/register",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(r)})
@@ -514,7 +533,7 @@ function onAppClick(e){
     regErr="";
     authToken=out.body.token;reg=out.body.user;
     try{localStorage.setItem("hoand_token",authToken);localStorage.setItem("hoand_user",JSON.stringify(reg))}catch(x){}
-    cur="feed";render();document.getElementById("main").scrollTop=0;toast("Welcome, "+reg.name.split(" ")[0]);loadFeed()
+    mode="profile";render();document.getElementById("main").scrollTop=0;toast("Welcome, "+reg.name.split(" ")[0]);
    })
    .catch(function(err){busy=false;regErr=apiError(err);render()})}
  else if(t.id=="signinbtn"){
@@ -557,10 +576,10 @@ function onAppClick(e){
   var fnameI=gi("f_first"),lnameI=gi("f_last");
   var ri={name:(fnameI+" "+lnameI).trim(),unit:gi("f_unit"),role:gi("f_role"),condo:gi("f_condo"),units:gi("f_units"),dues:gi("f_dues"),covers:covI,mgr:gi("f_mgr"),mgrName:(gi("f_mgr").indexOf("property")>-1?gi("f_mgrname"):""),reserve:gi("f_res"),lawsuit:gi("f_law"),quorum:gi("f_quorum"),newsletter:document.getElementById("f_news").checked};
   if(!fnameI||!lnameI){if(ie)ie.textContent="Please fill in your first and last name.";return}
-  if(!ri.unit||!ri.condo){if(ie)ie.textContent="Please fill in your unit number and HOA name.";return}
-  if(!(+ri.units>0)){if(ie)ie.textContent="Enter how many units are in your HOA.";return}
-  if(ri.dues===""||!(+ri.dues>=0)){if(ie)ie.textContent="Enter the monthly dues, even if it is 0.";return}
-  if(!covI.length){if(ie)ie.textContent="Select at least one thing the dues cover.";return}
+  if(!ri.condo){if(ie)ie.textContent="Please fill in the name of your HOA.";return}
+  if(!ri.role){if(ie)ie.textContent="Please select what you are (owner, renter, or board member).";return}
+  if(ri.units!==""&&!(+ri.units>0)){if(ie)ie.textContent="Enter a valid number of units, or leave it blank.";return}
+  if(ri.dues!==""&&!(+ri.dues>=0)){if(ie)ie.textContent="Enter a valid dues amount, or leave it blank.";return}
   if(ri.mgr.indexOf("property")>-1&&!ri.mgrName){if(ie)ie.textContent="Enter the name of your property management company.";return}
   t.disabled=true;t.textContent="Saving…";
   apiFetch("/api/auth/me",{method:"PUT",headers:{"Content-Type":"application/json","Authorization":"Bearer "+authToken},body:JSON.stringify(ri)})
@@ -575,6 +594,29 @@ function onAppClick(e){
     toast("Your info was updated");
    })
    .catch(function(err){t.disabled=false;t.textContent="Save changes";if(ie)ie.textContent=apiError(err)})}
+ else if(t.id=="saveprofile"){
+  var gp=function(i){var el=document.getElementById(i);return el?el.value.trim():""};
+  var covP=[].slice.call(document.querySelectorAll(".f_cov:checked")).map(function(c){return c.value});
+  var cocEl=document.getElementById("f_cov_other");
+  if(cocEl&&cocEl.checked){var otp=document.getElementById("f_cov_other_text");var otv=otp?otp.value.trim():"";if(otv)covP.push(otv)}
+  var mgrVal=gp("f_mgr");
+  var pdata={units:gp("f_units"),dues:gp("f_dues"),covers:covP,mgr:mgrVal,mgrName:(mgrVal.indexOf("property")>-1?gp("f_mgrname"):""),reserve:gp("f_res"),lawsuit:gp("f_law"),quorum:gp("f_quorum")};
+  regErr="";
+  if(mgrVal.indexOf("property")>-1&&!pdata.mgrName){regErr="Enter the name of your property management company, or use the skip link for this question.";render();return}
+  busy=true;render();
+  apiFetch("/api/auth/me",{method:"PUT",headers:{"Content-Type":"application/json","Authorization":"Bearer "+authToken},body:JSON.stringify(pdata)})
+   .then(function(res){return res.json().then(function(body){return {ok:res.ok,body:body}})})
+   .then(function(out){
+    busy=false;
+    if(!out.ok){regErr=out.body.error||"Could not save your profile.";render();return}
+    regErr="";
+    reg=out.body.user;
+    try{localStorage.setItem("hoand_user",JSON.stringify(reg))}catch(x){}
+    mode="signup";cur="feed";render();document.getElementById("main").scrollTop=0;toast("Profile saved — thank you!");loadFeed()
+   })
+   .catch(function(err){busy=false;regErr=apiError(err);render()})}
+ else if(t.id=="skipprofile"){
+  mode="signup";cur="feed";render();document.getElementById("main").scrollTop=0;loadFeed()}
  else if(t.id=="contbtn"){mode="signin";render()}
  else if(t.id=="forgotbtn"){
   var fgEmail=document.getElementById("fg_email").value.trim();
