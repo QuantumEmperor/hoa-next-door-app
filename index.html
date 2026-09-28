@@ -193,7 +193,7 @@ function pfField(fieldId,labelHtml,inputHtml){
 }
 function vProfile(){
  var dues=["Water","Sewer","Garbage","Heat","Snow removal","Insurance","Reserves","Landscaping"];
- return '<div class="reg"><img alt="Alaska HOA Accountability Project seal" src="'+LOGO+'"><h1>Let\'s build your HOA\'s profile</h1><p class="sub">Answer what you know. You can skip anything and come back to it anytime.</p></div><div class="form card">'+
+ return '<div class="reg"><img alt="Alaska HOA Accountability Project seal" src="'+LOGO+'"><h1>Let\'s build your HOA\'s profile</h1><p class="sub">Share what you know about your HOA. You can add or update information anytime.</p></div><div class="form card">'+
  pfField('units','Number of units','<input id="f_units" type="text" inputmode="numeric" autocomplete="off" placeholder="e.g. 24">')+
  pfField('dues','Monthly dues per unit ($)','<input id="f_dues" type="text" inputmode="decimal" autocomplete="off" placeholder="e.g. 250">')+
  pfField('covers','What do the dues cover?','<div class="checks">'+dues.map(function(d){return '<label><input type="checkbox" class="f_cov" value="'+d+'">'+d+'</label>'}).join("")+'<label><input type="checkbox" id="f_cov_other">Other</label></div><div id="covotherwrap" style="display:none"><input id="f_cov_other_text" autocomplete="off" placeholder="What else do the dues cover?"></div>')+
