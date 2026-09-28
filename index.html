@@ -141,7 +141,7 @@ function vReg(){
  '<label for="f_email">Email</label><input id="f_email" type="email" autocomplete="off">'+
  '<label for="f_pass">Password</label><div class="pwrow"><input id="f_pass" type="password" autocomplete="new-password" placeholder="At least 8 characters"><button type="button" class="pwtoggle" data-for="f_pass">Show</button></div>'+
  '<label for="f_condo">Name of HOA</label><input id="f_condo" autocomplete="off">'+
- '<div class="two"><div><label for="f_role">You are a</label><select id="f_role" autocomplete="off"><option value="" selected disabled>Select one</option><option>Owner who lives here</option><option>Owner who rents it out</option><option>Renter</option><option>Board member</option></select></div><div><label for="f_unit">Unit number <span style="color:var(--mute);font-weight:400">(optional)</span></label><input id="f_unit" autocomplete="off"></div></div>'+
+ '<div class="two"><div><label for="f_role">You are a</label><select id="f_role" autocomplete="off"><option value="" selected disabled>Select one</option><option>Owner who lives here</option><option>Owner who rents it out</option><option>Board member</option></select></div><div><label for="f_unit">Unit number <span style="color:var(--mute);font-weight:400">(optional)</span></label><input id="f_unit" autocomplete="off"></div></div>'+
  '<label class="opt" style="font-size:13px;font-weight:400"><input type="checkbox" id="f_news"> Send me the HOA Next Door newsletter (optional)</label><label class="opt" style="font-size:13px;font-weight:400"><input type="checkbox" id="f_agree"> I have read and agree to the <a href="#" class="pp">Privacy Policy</a></label>'+'<p class="err" id="err" role="alert">'+esc(regErr)+'</p><button class="btn" id="regbtn"'+(busy?' disabled':'')+'>'+(busy?'Joining…':'Join my community')+'</button>'+
  '<p style="text-align:center;margin-top:12px;font-size:14px">Already registered? <a href="#" class="tosign">Sign in</a></p>'+
  '<p style="text-align:center;margin-top:16px;font-size:13px"><a href="#" class="aboutlink" style="color:var(--blue);font-weight:800;text-decoration:underline">About &amp; our mission</a></p></div>';
@@ -221,7 +221,7 @@ function showEditInfo(){
  '<div class="card" style="background:var(--blueSoft);border:none;margin-bottom:16px"><p style="margin:0;font-size:14px">These answers are private and only visible to the site administrator — never to other members.</p></div>'+
  '<div class="form">'+
  '<div class="two"><div><label for="f_first">First name</label><input id="f_first" autocomplete="off" value="'+esc(first)+'"></div><div><label for="f_last">Last name</label><input id="f_last" autocomplete="off" value="'+esc(last)+'"></div></div>'+
- '<div class="two"><div><label for="f_unit">Your unit number</label><input id="f_unit" autocomplete="off" value="'+esc(reg.unit)+'"></div><div><label for="f_role">You are a</label><select id="f_role" autocomplete="off">'+["Owner who lives here","Owner who rents it out","Renter","Board member"].map(function(o){return '<option'+(reg.role===o?' selected':'')+'>'+o+'</option>'}).join("")+'</select></div></div>'+
+ '<div class="two"><div><label for="f_unit">Your unit number</label><input id="f_unit" autocomplete="off" value="'+esc(reg.unit)+'"></div><div><label for="f_role">You are a</label><select id="f_role" autocomplete="off">'+["Owner who lives here","Owner who rents it out","Board member"].map(function(o){return '<option'+(reg.role===o?' selected':'')+'>'+o+'</option>'}).join("")+'</select></div></div>'+
  '<label for="f_condo">Name of HOA</label><input id="f_condo" autocomplete="off" value="'+esc(reg.condo)+'">'+
  '<div class="two"><div><label for="f_units">Number of units</label><input id="f_units" type="text" inputmode="numeric" autocomplete="off" value="'+esc(reg.units)+'"></div><div><label for="f_dues">Monthly dues per unit ($)</label><input id="f_dues" type="text" inputmode="decimal" autocomplete="off" value="'+esc(reg.dues)+'"></div></div>'+
  '<label>What do the dues cover?</label><div class="checks">'+dues.map(function(dd){return '<label><input type="checkbox" class="f_cov" value="'+dd+'"'+(covers.indexOf(dd)>-1?' checked':'')+'>'+dd+'</label>'}).join("")+'<label><input type="checkbox" id="f_cov_other"'+(otherCov.length?' checked':'')+'>Other</label></div>'+
@@ -278,7 +278,7 @@ function showPolicy(){
 <p>HOA Next Door is operated by the Alaska HOA Accountability Project ("we," "us," or "the Project"). This policy explains what we collect through this app, why we collect it, who can see it, and the choices you have. It applies to this app only.</p>
 <h2>1. Information we collect</h2>
 <p><b>Information you give us directly:</b></p>
-<ul><li><b>Account information:</b> your name, email address, the password you choose (stored only in scrambled/encrypted form, never as plain text), your unit number, and your role (owner, renter, or board member).</li>
+<ul><li><b>Account information:</b> your name, email address, the password you choose (stored only in scrambled/encrypted form, never as plain text), your unit number, and your role (owner or board member).</li>
 <li><b>HOA information:</b> the HOA's name, number of units, monthly dues, what the dues cover, who manages the property (including a management company's name, if any), and whether a reserve fund exists.</li>
 <li><b>Content you post:</b> anything you write or upload in the community feed or elsewhere in the app.</li>
 <li><b>Newsletter preference:</b> whether you opted in to receive it.</li></ul>
@@ -510,7 +510,7 @@ function onAppClick(e){
   if(!r.condo){regErr="Please fill in the name of your HOA.";render();return}
   if(!/^\S+@\S+\.\S+$/.test(r.email)){regErr="Enter a valid email address.";render();return}
   if(!r.password||r.password.length<8){regErr="Password must be at least 8 characters.";render();return}
-  if(!r.role){regErr="Please select what you are (owner, renter, or board member).";render();return}
+  if(!r.role){regErr="Please select what you are (owner or board member).";render();return}
   if(!r.agreedToPrivacyPolicy){regErr="Please agree to the Privacy Policy to continue.";render();return}
   busy=true;render();
   apiFetch("/api/auth/register",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(r)})
@@ -565,7 +565,7 @@ function onAppClick(e){
   var ri={name:(fnameI+" "+lnameI).trim(),unit:gi("f_unit"),role:gi("f_role"),condo:gi("f_condo"),units:gi("f_units"),dues:gi("f_dues"),covers:covI,mgr:gi("f_mgr"),mgrName:(gi("f_mgr").indexOf("property")>-1?gi("f_mgrname"):""),reserve:gi("f_res"),lawsuit:gi("f_law"),quorum:gi("f_quorum"),newsletter:document.getElementById("f_news").checked};
   if(!fnameI||!lnameI){if(ie)ie.textContent="Please fill in your first and last name.";return}
   if(!ri.condo){if(ie)ie.textContent="Please fill in the name of your HOA.";return}
-  if(!ri.role){if(ie)ie.textContent="Please select what you are (owner, renter, or board member).";return}
+  if(!ri.role){if(ie)ie.textContent="Please select what you are (owner or board member).";return}
   if(ri.units!==""&&!(+ri.units>0)){if(ie)ie.textContent="Enter a valid number of units, or leave it blank.";return}
   if(ri.dues!==""&&!(+ri.dues>=0)){if(ie)ie.textContent="Enter a valid dues amount, or leave it blank.";return}
   if(ri.mgr.indexOf("property")>-1&&!ri.mgrName){if(ie)ie.textContent="Enter the name of your property management company.";return}
