@@ -356,7 +356,7 @@ function vFeed(){
  }).join("")}
  return '<div class="chips">'+cats.map(function(c){return '<button class="chip'+(c==cat?" on":"")+'" data-c="'+esc(c)+'">'+esc(c)+'</button>'}).join("")+'</div>'+
  '<div class="card"><textarea id="np" rows="2" maxlength="130" placeholder="What\'s going on?" aria-label="Write a post"></textarea><div class="meta" style="margin-top:-6px;margin-bottom:10px;justify-content:flex-end" id="npcount">0/130</div>'+
- '<label for="npcat" style="font-size:13px;color:var(--mute);font-weight:600">Category</label><select id="npcat" style="margin-bottom:10px">'+cats.filter(function(c){return c!=="All"}).map(function(c){return '<option'+(c===(cat==="All"?"General":cat)?' selected':'')+'>'+c+'</option>'}).join("")+'</select>'+
+ '<p style="font-size:12px;color:var(--mute);margin:0 0 10px">Posting to <b>'+esc(cat==="All"?"General":cat)+'</b>. Tap a category above to change it.</p>'+
  '<p class="err" id="perr" role="alert" style="margin-top:8px"></p><button class="btn" id="post"'+(busy?' disabled':'')+'>'+(busy?"Posting…":"Post")+'</button></div>'+
  listHtml+
  '<p style="text-align:center;margin-top:16px"><a href="#" class="pp" style="color:var(--blue);font-weight:800">Privacy Policy</a></p>';
@@ -644,7 +644,7 @@ function onAppClick(e){
   if(!v){pe.textContent="Write something first.";return}
   if(v.length>130){pe.textContent="Please keep it to 130 characters or fewer.";return}
   if(hasProfanity(v)){pe.textContent="Please remove inappropriate language before posting.";return}
-  var catSel=document.getElementById("npcat");var postCat=catSel?catSel.value:"General";
+  var postCat=cat==="All"?"General":cat;
   busy=true;render();
   apiFetch("/api/posts",{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+authToken},body:JSON.stringify({body:v,category:postCat})})
    .then(function(res){return res.json().then(function(b){return {ok:res.ok,body:b}})})
