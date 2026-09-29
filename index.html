@@ -128,6 +128,8 @@ var API_BASE="https://alaska-hoa-server.onrender.com";
 var ADMIN_CONTACT="quantumactivist.88@gmail.com";
 var reg=null;try{reg=JSON.parse(localStorage.getItem("hoand_user"))}catch(e){}
 var authToken=null;try{authToken=localStorage.getItem("hoand_token")}catch(e){}
+// Wake the server as soon as the page opens, so it is ready by the time someone finishes the form
+try{fetch(API_BASE+"/",{mode:"no-cors",cache:"no-store"}).catch(function(){})}catch(e){}
 if(!authToken)reg=null;
 var mode="welcome",busy=false,regErr="",signinErr="";
 var urlResetToken=null;try{var _qp=new URLSearchParams(location.search);if(_qp.get("reset"))urlResetToken=_qp.get("reset")}catch(e){}
@@ -422,7 +424,7 @@ function apiError(err){
  return (err&&err.message==="Failed to fetch")?"Can't reach the server right now. Check your connection and try again.":(err&&err.message)||"Something went wrong. Please try again.";
 }
 function apiFetch(path,opts){
- var ctrl=new AbortController();var timer=setTimeout(function(){ctrl.abort()},25000);
+ var ctrl=new AbortController();var timer=setTimeout(function(){ctrl.abort()},90000);
  opts=opts||{};opts.signal=ctrl.signal;
  return fetch(API_BASE+path,opts).finally(function(){clearTimeout(timer)});
 }
