@@ -128,8 +128,6 @@ var API_BASE="https://alaska-hoa-server.onrender.com";
 var ADMIN_CONTACT="quantumactivist.88@gmail.com";
 var reg=null;try{reg=JSON.parse(localStorage.getItem("hoand_user"))}catch(e){}
 var authToken=null;try{authToken=localStorage.getItem("hoand_token")}catch(e){}
-// Wake the server as soon as the page opens, so it is ready by the time someone finishes the form
-try{fetch(API_BASE+"/",{mode:"no-cors",cache:"no-store"}).catch(function(){})}catch(e){}
 if(!authToken)reg=null;
 var mode="welcome",busy=false,regErr="",signinErr="";
 var urlResetToken=null;try{var _qp=new URLSearchParams(location.search);if(_qp.get("reset"))urlResetToken=_qp.get("reset")}catch(e){}
@@ -139,7 +137,6 @@ var forgotErr="",forgotMsg="",resetErr="",resetDone=false;
 function vWelcome(){
  return '<div class="reg"><img alt="Alaska HOA Accountability Project seal" src="'+LOGO+'"><h1>HOA Next Door</h1><p class="sub">A place for owners in every Alaska HOA community to see what\'s happening, share updates, and stay in the loop with their neighbors. It takes about two minutes to join.</p></div>'+
  '<button class="btn tosignup" id="welcomejoin">Join my community</button>'+
- '<p style="text-align:center;margin:10px 4px 0;font-size:13px;color:var(--mute)">Heads up: if the app has been quiet for a while, the first sign-up can take up to a minute while it wakes up. Thanks for your patience!</p>'+
  '<button class="btn light tosign" id="welcomesignin" style="margin-top:10px">I already have an account</button>'+
  '<p style="text-align:center;margin-top:16px;font-size:13px"><a href="#" class="aboutlink" style="color:var(--blue);font-weight:800;text-decoration:underline">About &amp; our mission</a></p>';
 }
@@ -152,6 +149,7 @@ function vReg(){
  '<label for="f_email">Email</label><input id="f_email" type="email" autocomplete="off" value="'+esc(d.email||"")+'">'+
  '<label for="f_pass">Password</label><div class="pwrow"><input id="f_pass" type="password" autocomplete="new-password" placeholder="At least 8 characters" value="'+esc(d.pass||"")+'"><button type="button" class="pwtoggle" data-for="f_pass">Show</button></div>'+
  '<label for="f_condo">Name of HOA</label><input id="f_condo" autocomplete="off" value="'+esc(d.condo||"")+'">'+
+ '<label for="f_alaska">Is your HOA located in Alaska?</label><select id="f_alaska" autocomplete="off"><option value="" disabled'+(!d.alaska?' selected':'')+'>Select one</option><option'+(d.alaska==="yes"?' selected':'')+'>Yes</option><option'+(d.alaska==="no"?' selected':'')+'>No</option></select>'+
  '<div class="two"><div><label for="f_role">You are a</label><select id="f_role" autocomplete="off"><option value="" disabled'+(!d.role?' selected':'')+'>Select one</option>'+roleOpts.map(function(o){return '<option'+(o===d.role?' selected':'')+'>'+o+'</option>'}).join("")+'</select></div><div><label for="f_unit">Unit number <span style="color:var(--mute);font-weight:400">(optional)</span></label><input id="f_unit" autocomplete="off" value="'+esc(d.unit||"")+'"></div></div>'+
  '<label class="opt" style="font-size:13px;font-weight:400"><input type="checkbox" id="f_news"'+(d.news?' checked':'')+'> Send me the HOA Next Door newsletter (optional)</label><label class="opt" style="font-size:13px;font-weight:400"><input type="checkbox" id="f_agree"'+(d.agree?' checked':'')+'> I have read and agree to the <a href="#" class="pp">Privacy Policy</a></label>'+'<p class="err" id="err" role="alert">'+esc(regErr)+'</p><button class="btn" id="regbtn"'+(busy?' disabled':'')+'>'+(busy?'Joining…':'Join my community')+'</button>'+
  '<p style="text-align:center;margin-top:12px;font-size:14px">Already registered? <a href="#" class="tosign">Sign in</a></p>'+
@@ -351,8 +349,8 @@ function vFeed(){
   var head='<div class="who"><span class="av">'+esc((p.name||"?").charAt(0))+'</span><b style="color:var(--ink)">'+esc(p.name)+'</b><span class="tag">'+esc(p.category)+'</span></div>';
   if(editPostId===p.id){
    return '<div class="card">'+head+
-    '<textarea class="ep" data-editpostid="'+esc(p.id)+'" rows="2" maxlength="130">'+esc(p.body)+'</textarea>'+
-    '<div class="meta" style="margin-top:-6px;margin-bottom:6px;justify-content:flex-end" id="epcount_'+esc(p.id)+'">'+esc(p.body).length+'/130</div>'+
+    '<textarea class="ep" data-editpostid="'+esc(p.id)+'" rows="2">'+esc(p.body)+'</textarea>'+
+    '<div class="meta" style="margin-top:-6px;margin-bottom:6px;justify-content:flex-end" id="epcount_'+esc(p.id)+'">'+esc(p.body).length+' characters</div>'+
     '<p class="err" id="eperr_'+esc(p.id)+'" role="alert"></p>'+
     '<button class="btn" data-saveedit="'+esc(p.id)+'"'+(editBusy?' disabled':'')+'>'+(editBusy?"Saving…":"Save")+'</button> '+
     '<button class="btn light" data-canceledit="'+esc(p.id)+'">Cancel</button>'+
@@ -361,7 +359,7 @@ function vFeed(){
   return '<div class="card">'+head+'<p>'+esc(p.body)+'</p><div class="meta"><span>'+esc(p.createdAt?new Date(p.createdAt).toLocaleString():"")+'</span><button class="repliesbtn" data-viewreplies="'+esc(p.id)+'">💬 Reply ('+(p.replyCount||0)+')</button>'+(p.canEdit?'<button class="delbtn" data-editpost="'+esc(p.id)+'">Edit</button>':'')+(p.canDelete?'<button class="delbtn" data-delpost="'+esc(p.id)+'" style="color:var(--warn)">Delete</button>':'')+'</div>'+vReplies(p)+'</div>';
  }).join("")}
  return '<div class="chips">'+cats.map(function(c){return '<button class="chip'+(c==cat?" on":"")+'" data-c="'+esc(c)+'">'+esc(c)+'</button>'}).join("")+'</div>'+
- '<div class="card"><textarea id="np" rows="2" maxlength="130" placeholder="What\'s going on?" aria-label="Write a post"></textarea><div class="meta" style="margin-top:-6px;margin-bottom:10px;justify-content:flex-end" id="npcount">0/130</div>'+
+ '<div class="card"><textarea id="np" rows="2" placeholder="What\'s going on?" aria-label="Write a post"></textarea><div class="meta" style="margin-top:-6px;margin-bottom:10px;justify-content:flex-end" id="npcount">0 characters</div>'+
  '<p style="font-size:12px;color:var(--mute);margin:0 0 10px">Posting to <b>'+esc(cat==="All"?"General":cat)+'</b>. Tap a category above to change it.</p>'+
  '<p class="err" id="perr" role="alert" style="margin-top:8px"></p><button class="btn" id="post"'+(busy?' disabled':'')+'>'+(busy?"Posting…":"Post")+'</button></div>'+
  listHtml+
@@ -388,8 +386,8 @@ function vReplies(p){
  else if(!list||!list.length){body='<div class="empty" style="padding:10px">No replies yet.</div>'}
  else{body=list.map(function(r){return '<div style="padding:8px 0;border-top:1px solid var(--line)"><b style="font-size:13px">'+esc(r.name)+'</b> <span style="font-size:13px">'+esc(r.body)+'</span>'+(r.canDelete?' <button class="delbtn" data-delreply="'+esc(r.id)+'" data-delreplypost="'+esc(p.id)+'" style="color:var(--warn);font-size:12px">Delete</button>':'')+'</div>'}).join("")}
  return '<div class="replies" style="margin-top:8px;padding-top:8px;border-top:1px solid var(--line)">'+body+
- '<textarea class="rp" data-postid="'+esc(p.id)+'" rows="2" maxlength="130" placeholder="Write a reply…" style="margin-top:8px"></textarea>'+
- '<div class="meta" style="margin-top:-6px;margin-bottom:6px;justify-content:flex-end" id="rpcount_'+esc(p.id)+'">0/130</div>'+
+ '<textarea class="rp" data-postid="'+esc(p.id)+'" rows="2" placeholder="Write a reply…" style="margin-top:8px"></textarea>'+
+ '<div class="meta" style="margin-top:-6px;margin-bottom:6px;justify-content:flex-end" id="rpcount_'+esc(p.id)+'">0 characters</div>'+
  '<p class="err" id="rperr_'+esc(p.id)+'" role="alert"></p>'+
  '<button class="btn light replybtn" data-replyto="'+esc(p.id)+'"'+(replyBusy?' disabled':'')+'>'+(replyBusy?"Replying…":"Reply")+'</button>'+
  '</div>';
@@ -411,7 +409,7 @@ function render(){
  if(mode=="reset"){hd.style.display="none";nv.style.display="none";mn.innerHTML=vReset();return}
  if(mode=="forgot"){hd.style.display="none";nv.style.display="none";mn.innerHTML=vForgot();return}
  if(!reg){hd.style.display="none";nv.style.display="none";mn.innerHTML=(mode=="signin"?vSignIn():mode=="signedout"?vSignedOut():mode=="forgot"?vForgot():mode=="welcome"?vWelcome():vReg());
-  if(mode!="signin"&&mode!="signedout"&&mode!="welcome"&&mode!="forgot"){["f_role","f_mgr","f_res","f_law"].forEach(function(id){var el=document.getElementById(id);if(el)el.value=(id=="f_role"&&regDraft&&regDraft.role)?regDraft.role:""});}
+  if(mode!="signin"&&mode!="signedout"&&mode!="welcome"&&mode!="forgot"){["f_role","f_alaska","f_mgr","f_res","f_law"].forEach(function(id){var el=document.getElementById(id);if(!el)return;if(id=="f_role")el.value=(regDraft&&regDraft.role)?regDraft.role:"";else if(id=="f_alaska")el.value=(regDraft&&regDraft.alaska==="yes")?"Yes":(regDraft&&regDraft.alaska==="no")?"No":"";else el.value=""});}
   return}
  if(mode=="profile"){hd.style.display="none";nv.style.display="none";mn.innerHTML=vProfile();return}
  hd.style.display="flex";nv.style.display="none";
@@ -424,7 +422,7 @@ function apiError(err){
  return (err&&err.message==="Failed to fetch")?"Can't reach the server right now. Check your connection and try again.":(err&&err.message)||"Something went wrong. Please try again.";
 }
 function apiFetch(path,opts){
- var ctrl=new AbortController();var timer=setTimeout(function(){ctrl.abort()},90000);
+ var ctrl=new AbortController();var timer=setTimeout(function(){ctrl.abort()},25000);
  opts=opts||{};opts.signal=ctrl.signal;
  return fetch(API_BASE+path,opts).finally(function(){clearTimeout(timer)});
 }
@@ -450,7 +448,6 @@ function onAppClick(e){
   var v2=ta?ta.value.trim():"";
   var rerr=document.getElementById("rperr_"+pid2);if(rerr)rerr.textContent="";
   if(!v2){if(rerr)rerr.textContent="Write something first.";return}
-  if(v2.length>130){if(rerr)rerr.textContent="Please keep it to 130 characters or fewer.";return}
   if(hasProfanity(v2)){if(rerr)rerr.textContent="Please remove inappropriate language before posting.";return}
   replyBusy=true;render();
   apiFetch("/api/posts/"+pid2+"/replies",{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+authToken},body:JSON.stringify({body:v2})})
@@ -500,7 +497,6 @@ function onAppClick(e){
   var ev=eta?eta.value.trim():"";
   var eerr=document.getElementById("eperr_"+epid);if(eerr)eerr.textContent="";
   if(!ev){if(eerr)eerr.textContent="Write something first.";return}
-  if(ev.length>130){if(eerr)eerr.textContent="Please keep it to 130 characters or fewer.";return}
   if(hasProfanity(ev)){if(eerr)eerr.textContent="Please remove inappropriate language before posting.";return}
   editBusy=true;render();
   apiFetch("/api/posts/"+epid,{method:"PUT",headers:{"Content-Type":"application/json","Authorization":"Bearer "+authToken},body:JSON.stringify({body:ev})})
@@ -516,11 +512,14 @@ function onAppClick(e){
  else if(t.id=="regbtn"){
   var g=function(i){return document.getElementById(i).value.trim()};
   var fname=g("f_first"),lname=g("f_last");
-  var r={name:(fname+" "+lname).trim(),email:g("f_email"),password:g("f_pass"),unit:g("f_unit"),role:g("f_role"),condo:g("f_condo"),newsletter:document.getElementById("f_news").checked,agreedToPrivacyPolicy:document.getElementById("f_agree").checked};
-  regDraft={first:fname,last:lname,email:r.email,pass:r.password,condo:r.condo,role:r.role,unit:r.unit,news:r.newsletter,agree:r.agreedToPrivacyPolicy};
+  var alaskaSel=g("f_alaska");
+  var r={name:(fname+" "+lname).trim(),email:g("f_email"),password:g("f_pass"),unit:g("f_unit"),role:g("f_role"),condo:g("f_condo"),inAlaska:alaskaSel==="Yes"?true:alaskaSel==="No"?false:null,newsletter:document.getElementById("f_news").checked,agreedToPrivacyPolicy:document.getElementById("f_agree").checked};
+  regDraft={first:fname,last:lname,email:r.email,pass:r.password,condo:r.condo,alaska:alaskaSel==="Yes"?"yes":alaskaSel==="No"?"no":"",role:r.role,unit:r.unit,news:r.newsletter,agree:r.agreedToPrivacyPolicy};
   regErr="";
   if(!fname||!lname){regErr="Please fill in your first and last name.";render();return}
   if(!r.condo){regErr="Please fill in the name of your HOA.";render();return}
+  if(r.inAlaska===null){regErr="Please tell us whether your HOA is located in Alaska.";render();return}
+  if(r.inAlaska===false){regErr="Sorry — HOA Next Door is currently only for homeowners associations located in Alaska.";render();return}
   if(!/^\S+@\S+\.\S+$/.test(r.email)){regErr="Enter a valid email address.";render();return}
   if(!r.password||r.password.length<8){regErr="Password must be at least 8 characters.";render();return}
   if(!r.role){regErr="Please select what you are (owner or board member).";render();return}
@@ -649,7 +648,6 @@ function onAppClick(e){
  else if(t.id=="post"){
   var v=document.getElementById("np").value.trim();var pe=document.getElementById("perr");pe.textContent="";
   if(!v){pe.textContent="Write something first.";return}
-  if(v.length>130){pe.textContent="Please keep it to 130 characters or fewer.";return}
   if(hasProfanity(v)){pe.textContent="Please remove inappropriate language before posting.";return}
   var postCat=cat==="All"?"General":cat;
   busy=true;render();
@@ -667,9 +665,9 @@ document.addEventListener("change",function(e){
  if(e.target.id=="f_cov_other"){document.getElementById("covotherwrap").style.display=e.target.checked?"block":"none";if(e.target.checked)document.getElementById("f_cov_other_text").focus()}
 });
 document.addEventListener("input",function(e){
- if(e.target.id=="np"){var c=document.getElementById("npcount");if(c)c.textContent=e.target.value.length+"/130"}
- if(e.target.classList&&e.target.classList.contains("rp")){var pid=e.target.dataset.postid;var c2=document.getElementById("rpcount_"+pid);if(c2)c2.textContent=e.target.value.length+"/130"}
- if(e.target.classList&&e.target.classList.contains("ep")){var eid=e.target.dataset.editpostid;var c3=document.getElementById("epcount_"+eid);if(c3)c3.textContent=e.target.value.length+"/130"}
+ if(e.target.id=="np"){var c=document.getElementById("npcount");if(c)c.textContent=e.target.value.length+" characters"}
+ if(e.target.classList&&e.target.classList.contains("rp")){var pid=e.target.dataset.postid;var c2=document.getElementById("rpcount_"+pid);if(c2)c2.textContent=e.target.value.length+" characters"}
+ if(e.target.classList&&e.target.classList.contains("ep")){var eid=e.target.dataset.editpostid;var c3=document.getElementById("epcount_"+eid);if(c3)c3.textContent=e.target.value.length+" characters"}
 });
 render();
 if(reg&&authToken)loadFeed();
