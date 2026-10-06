@@ -70,6 +70,11 @@ label{font-size:14px;font-weight:700;display:block;margin-bottom:4px}
 .doc{display:flex;align-items:center;gap:12px}
 .doc .ic{font-size:26px}
 .doc small{color:var(--mute);font-size:13px}
+.remind{position:fixed;inset:0;background:rgba(15,22,29,.55);z-index:9;display:flex;align-items:center;justify-content:center;padding:16px;overflow-y:auto}
+.remind .box{background:var(--card);color:var(--ink);border-radius:14px;max-width:440px;width:100%;padding:20px 18px;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+.remind h2{margin:0 0 4px;font-size:19px}
+.remind .sub{color:var(--mute);font-size:14px;margin:0 0 14px}
+.remind .note{color:var(--mute);font-size:12px;line-height:1.5;margin:12px 0 0}
 .toast{position:fixed;left:50%;bottom:84px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:10px;font-weight:700;font-size:14px}
 h2{font-size:18px;margin:2px 0 10px}
 .empty{color:var(--mute);text-align:center;padding:24px 0}
@@ -254,10 +259,10 @@ function showEditInfo(){
  '<div class="two"><div><label for="f_units">Number of units</label><input id="f_units" type="text" inputmode="numeric" autocomplete="off" value="'+esc(reg.units)+'"></div><div><label for="f_dues">Monthly dues per unit ($)</label><input id="f_dues" type="text" inputmode="decimal" autocomplete="off" value="'+esc(reg.dues)+'"></div></div>'+
  '<label>What do the dues cover?</label><div class="checks">'+dues.map(function(dd){return '<label><input type="checkbox" class="f_cov" value="'+dd+'"'+(covers.indexOf(dd)>-1?' checked':'')+'>'+dd+'</label>'}).join("")+'<label><input type="checkbox" id="f_cov_other"'+(otherCov.length?' checked':'')+'>Other</label></div>'+
  '<div id="covotherwrap" style="display:'+(otherCov.length?'block':'none')+'"><input id="f_cov_other_text" autocomplete="off" placeholder="What else do the dues cover?" value="'+esc(otherCov.join(", "))+'"></div>'+
- '<label for="f_mgr">Who manages it?</label><select id="f_mgr" autocomplete="off">'+["The board (self-managed)","A property management company","Not sure"].map(function(o){return '<option'+(reg.mgr===o?' selected':'')+'>'+o+'</option>'}).join("")+'</select>'+
+ '<label for="f_mgr">Who manages it?</label><select id="f_mgr" autocomplete="off"><option value=""'+(reg.mgr?'':' selected')+'>Select one</option>'+["The board (self-managed)","A property management company","Not sure"].map(function(o){return '<option'+(reg.mgr===o?' selected':'')+'>'+o+'</option>'}).join("")+'</select>'+
  '<div id="mgrwrap" style="display:'+(isProp?'block':'none')+'"><label for="f_mgrname">Name of property management company</label><input id="f_mgrname" autocomplete="off" value="'+esc(reg.mgrName||"")+'"></div>'+
- '<label for="f_res">Does the association have a reserve fund?</label><select id="f_res" autocomplete="off">'+["Yes","No","Not sure"].map(function(o){return '<option'+(reg.reserve===o?' selected':'')+'>'+o+'</option>'}).join("")+'</select>'+
- '<label for="f_law">Is your HOA currently in a lawsuit?</label><select id="f_law" autocomplete="off">'+["Yes","No","Prefer not to say"].map(function(o){return '<option'+(reg.lawsuit===o?' selected':'')+'>'+o+'</option>'}).join("")+'</select>'+
+ '<label for="f_res">Does the association have a reserve fund?</label><select id="f_res" autocomplete="off"><option value=""'+(reg.reserve?'':' selected')+'>Select one</option>'+["Yes","No","Not sure"].map(function(o){return '<option'+(reg.reserve===o?' selected':'')+'>'+o+'</option>'}).join("")+'</select>'+
+ '<label for="f_law">Is your HOA currently in a lawsuit?</label><select id="f_law" autocomplete="off"><option value=""'+(reg.lawsuit?'':' selected')+'>Select one</option>'+["Yes","No","Prefer not to say"].map(function(o){return '<option'+(reg.lawsuit===o?' selected':'')+'>'+o+'</option>'}).join("")+'</select>'+
  '<label for="f_quorum">How many owners are needed for a quorum at a meeting?</label><input id="f_quorum" type="text" inputmode="numeric" autocomplete="off" placeholder="e.g. 10 owners or 10%" value="'+esc(reg.quorum)+'">'+
  [["age","age55plus","Are you 55 or older?"],["dis","disability","Do you consider yourself to have a disability?"],["fix","fixedIncome","Do you primarily live on a fixed income? (for example Social Security, a pension, or disability benefits)"]].map(function(q){return '<fieldset class="rq"><legend>'+q[2]+'</legend>'+["Yes","No","Prefer not to answer"].map(function(o){return '<label><input type="radio" name="f_'+q[0]+'" value="'+o+'"'+(reg[q[1]]===o?' checked':'')+'>'+o+'</label>'}).join("")+'</fieldset>'}).join("")+
  '<label class="opt"><input type="checkbox" id="f_news"'+(reg.newsletter?' checked':'')+'> Send me the HOA Next Door newsletter (optional)</label>'+
@@ -570,7 +575,7 @@ function onAppClick(e){
     signinErr="";
     authToken=out.body.token;reg=out.body.user;
     try{localStorage.setItem("hoand_token",authToken);localStorage.setItem("hoand_user",JSON.stringify(reg))}catch(x){}
-    mode="signup";cur="feed";render();window.scrollTo(0,0);toast("Welcome back, "+reg.name.split(" ")[0]);loadFeed()
+    mode="signup";cur="feed";render();window.scrollTo(0,0);toast("Welcome back, "+reg.name.split(" ")[0]);loadFeed();setTimeout(maybeRemind,900)
    })
    .catch(function(err){busy=false;signinErr=apiError(err);render()})}
  else if(t.id=="signout"){reg=null;authToken=null;mode="signedout";try{localStorage.removeItem("hoand_token");localStorage.removeItem("hoand_user")}catch(x){}render()}
@@ -694,6 +699,37 @@ document.addEventListener("input",function(e){
 });
 render();
 if(reg&&authToken)loadFeed();
+var remindShown=false;
+function maybeRemind(){
+ if(remindShown||!reg||!authToken||mode=="profile"||mode=="reset"||mode=="forgot")return;
+ if(reg.age55plus||reg.disability||reg.fixedIncome)return;
+ if(document.querySelector(".ov,.remind"))return;
+ remindShown=true;
+ var qs=[["age","age55plus","Are you 55 or older?"],["dis","disability","Do you consider yourself to have a disability?"],["fix","fixedIncome","Do you primarily live on a fixed income? (for example Social Security, a pension, or disability benefits)"]];
+ var d=document.createElement("div");d.className="remind";d.setAttribute("role","dialog");d.setAttribute("aria-modal","true");d.setAttribute("aria-label","Three quick questions");
+ d.innerHTML='<div class="box form"><h2>Three quick questions</h2><p class="sub">We added a few new questions to your profile. Answer them now, or skip and we\'ll remind you next time.</p>'+
+  qs.map(function(q){return '<fieldset class="rq"><legend>'+q[2]+'</legend>'+["Yes","No","Prefer not to answer"].map(function(o){return '<label><input type="radio" name="rm_'+q[0]+'" value="'+o+'">'+o+'</label>'}).join("")+'</fieldset>'}).join("")+
+  '<p class="err" id="rmerr" role="alert"></p><button class="btn" id="rmsave">Save my answers</button><button class="btn light" id="rmskip" style="margin-top:10px">Skip for now</button>'+
+  '<p class="note">These questions are optional. Your answers are private: only the site administrator can see them, and they are used only in anonymous, combined statistics. <a href="#" class="pp">Privacy Policy</a></p></div>';
+ document.body.appendChild(d);
+ var close=function(){d.remove()};
+ d.querySelector("#rmskip").onclick=close;
+ d.querySelector("#rmsave").onclick=function(){
+  var b=this,er=d.querySelector("#rmerr"),ans={};
+  qs.forEach(function(q){var x=d.querySelector('input[name="rm_'+q[0]+'"]:checked');if(x)ans[q[1]]=x.value});
+  if(!Object.keys(ans).length){er.textContent="Pick an answer for at least one question, or tap Skip for now.";return}
+  er.textContent="";b.disabled=true;b.textContent="Saving\u2026";
+  apiFetch("/api/auth/me",{method:"PUT",headers:{"Content-Type":"application/json","Authorization":"Bearer "+authToken},body:JSON.stringify(ans)})
+   .then(function(res){return res.json().then(function(body){return {ok:res.ok,body:body}})})
+   .then(function(out){
+    if(!out.ok){b.disabled=false;b.textContent="Save my answers";er.textContent=out.body.error||"Could not save your answers.";return}
+    if(out.body&&out.body.user)reg=out.body.user;else Object.keys(ans).forEach(function(k){reg[k]=ans[k]});
+    try{localStorage.setItem("hoand_user",JSON.stringify(reg))}catch(x){}
+    close();toast("Thank you! Your answers were saved.")
+   })
+   .catch(function(err){b.disabled=false;b.textContent="Save my answers";er.textContent=apiError(err)})};
+}
+if(reg&&authToken)setTimeout(maybeRemind,700);
 </script>
 <script>
 document.addEventListener("wheel",function(e){
