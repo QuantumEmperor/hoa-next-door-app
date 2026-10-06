@@ -22,15 +22,16 @@ box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:en
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f161d;--card:#18222c;--ink:#e8eef4;--mute:#93a3b3;--line:#2a3846;--blue:#7fb0e0;--blueSoft:#1f3346;--sun:#f2b843;--sunSoft:#3a3117;--ok:#5fc48c;--okSoft:#183526;--warn:#f08a5d;--warnSoft:#3d2418}}
 :root[data-theme="dark"]{--bg:#0f161d;--card:#18222c;--ink:#e8eef4;--mute:#93a3b3;--line:#2a3846;--blue:#7fb0e0;--blueSoft:#1f3346;--sun:#f2b843;--sunSoft:#3a3117;--ok:#5fc48c;--okSoft:#183526;--warn:#f08a5d;--warnSoft:#3d2418}
 *{box-sizing:border-box}
-html,body{height:100%;margin:0}
+html,body{min-height:100%;margin:0}
 html{scroll-padding-top:env(safe-area-inset-top,0px)}
 body{background:var(--bg);color:var(--ink);font-family:'Nunito',system-ui,-apple-system,'Segoe UI',sans-serif;font-size:16px;line-height:1.45;display:flex;justify-content:center}
-#app{width:100%;max-width:560px;height:100%;display:flex;flex-direction:column;background:var(--bg)}
+#app{width:100%;max-width:560px;min-height:100vh;display:flex;flex-direction:column;background:var(--bg)}
 header{padding:14px 20px 10px;background:var(--blue);color:#fff}
 header b{font-size:19px;font-weight:800}
 header small{display:block;opacity:.85;font-size:13px}
-main{flex:1;overflow-y:auto;padding:14px 20px 20px;scrollbar-width:none;-ms-overflow-style:none}
-main::-webkit-scrollbar{display:none}
+main{flex:1;padding:14px 20px 20px}
+header{position:sticky;top:0;z-index:5}
+nav{position:sticky;bottom:0;z-index:5}
 nav{display:flex;background:var(--card);border-top:1px solid var(--line)}
 nav button{flex:1;border:0;background:none;color:var(--mute);padding:9px 0 8px;font:inherit;font-size:12px;font-weight:600;cursor:pointer}
 nav button span{display:block;font-size:20px;line-height:1.2}
@@ -109,6 +110,12 @@ input[type=checkbox]{width:auto;margin:0}
 .opt a,.form a{color:var(--blue);font-weight:800}
 .ov{position:fixed;top:0;bottom:0;left:50%;width:100%;max-width:560px;transform:translateX(-50%);background:var(--bg);z-index:10;overflow-y:auto;padding:calc(16px + env(safe-area-inset-top,0px)) 20px calc(28px + env(safe-area-inset-bottom,0px));scrollbar-width:none;-ms-overflow-style:none}
 .ov::-webkit-scrollbar{display:none}
+@media (hover:hover) and (pointer:fine){
+.ov{scrollbar-width:thin;scrollbar-color:var(--mute) transparent;-ms-overflow-style:auto}
+.ov::-webkit-scrollbar{display:block;width:10px}
+.ov::-webkit-scrollbar-thumb{background:var(--mute);border-radius:10px;border:2px solid var(--bg)}
+.ov::-webkit-scrollbar-track{background:transparent}
+}
 .ov h1{font-size:22px;margin:0 0 2px}
 .ov h2{font-size:16px;margin:16px 0 4px}
 .ov p,.ov li{font-size:15px;margin:0 0 6px}
@@ -453,7 +460,7 @@ function onAppClick(e){
  if(t.classList.contains("toforgot")){e.preventDefault();mode="forgot";forgotErr="";forgotMsg="";render();return}
  if(t.id=="forgotback"){mode="signin";forgotMsg="";forgotErr="";render();return}
  if(t.id=="resetdoneback"){mode="signin";resetDone=false;try{history.replaceState(null,"",location.pathname)}catch(x){}render();return}
- if(t.dataset.t){cur=t.dataset.t;render();document.getElementById("main").scrollTop=0}
+ if(t.dataset.t){cur=t.dataset.t;render();window.scrollTo(0,0)}
  else if(t.dataset.c){cat=t.dataset.c;render()}
  else if(t.dataset.viewreplies){var pid=t.dataset.viewreplies;if(openReplyId===pid){openReplyId=null}else{openReplyId=pid;if(!repliesByPost[pid])loadReplies(pid)}render();return}
  else if(t.dataset.replyto){
@@ -547,7 +554,7 @@ function onAppClick(e){
     regErr="";regDraft=null;
     authToken=out.body.token;reg=out.body.user;
     try{localStorage.setItem("hoand_token",authToken);localStorage.setItem("hoand_user",JSON.stringify(reg))}catch(x){}
-    mode="profile";render();document.getElementById("main").scrollTop=0;toast("Welcome, "+reg.name.split(" ")[0]);
+    mode="profile";render();window.scrollTo(0,0);toast("Welcome, "+reg.name.split(" ")[0]);
    })
    .catch(function(err){busy=false;regErr=apiError(err);render()})}
  else if(t.id=="signinbtn"){
@@ -563,7 +570,7 @@ function onAppClick(e){
     signinErr="";
     authToken=out.body.token;reg=out.body.user;
     try{localStorage.setItem("hoand_token",authToken);localStorage.setItem("hoand_user",JSON.stringify(reg))}catch(x){}
-    mode="signup";cur="feed";render();document.getElementById("main").scrollTop=0;toast("Welcome back, "+reg.name.split(" ")[0]);loadFeed()
+    mode="signup";cur="feed";render();window.scrollTo(0,0);toast("Welcome back, "+reg.name.split(" ")[0]);loadFeed()
    })
    .catch(function(err){busy=false;signinErr=apiError(err);render()})}
  else if(t.id=="signout"){reg=null;authToken=null;mode="signedout";try{localStorage.removeItem("hoand_token");localStorage.removeItem("hoand_user")}catch(x){}render()}
@@ -628,11 +635,11 @@ function onAppClick(e){
     regErr="";
     reg=out.body.user;
     try{localStorage.setItem("hoand_user",JSON.stringify(reg))}catch(x){}
-    mode="signup";cur="feed";render();document.getElementById("main").scrollTop=0;toast("Profile saved — thank you!");loadFeed()
+    mode="signup";cur="feed";render();window.scrollTo(0,0);toast("Profile saved — thank you!");loadFeed()
    })
    .catch(function(err){busy=false;regErr=apiError(err);render()})}
  else if(t.id=="skipprofile"){
-  mode="signup";cur="feed";render();document.getElementById("main").scrollTop=0;loadFeed()}
+  mode="signup";cur="feed";render();window.scrollTo(0,0);loadFeed()}
  else if(t.id=="contbtn"){mode="signin";render()}
  else if(t.id=="forgotbtn"){
   var fgEmail=document.getElementById("fg_email").value.trim();
@@ -687,6 +694,12 @@ document.addEventListener("input",function(e){
 });
 render();
 if(reg&&authToken)loadFeed();
+</script>
+<script>
+document.addEventListener("wheel",function(e){
+ var t=e.target;if(t.closest&&(t.closest("main")||t.closest(".ov")||t.closest("select,textarea")))return;
+ var s=document.querySelector(".ov");if(s)s.scrollTop+=e.deltaY;
+},{passive:true});
 </script>
 </body>
 </html>
