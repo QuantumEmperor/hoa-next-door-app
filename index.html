@@ -348,7 +348,7 @@ function showPolicy(){
 <button class="btn ppx" style="margin-top:14px">Close</button>`;
  document.body.appendChild(d);d.scrollTop=0;
 }
-function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
 var BADWORDS=["fuck","shit","bitch","asshole","cunt","bastard","dick","piss","slut","whore","fag","nigger","retard"];
 function hasProfanity(s){
  var low=String(s).toLowerCase();
@@ -625,19 +625,19 @@ function onAppClick(e){
   var pdata={units:gp("f_units"),dues:gp("f_dues"),covers:covP,mgr:mgrVal,mgrName:(mgrVal.indexOf("property")>-1?gp("f_mgrname"):""),reserve:gp("f_res"),lawsuit:gp("f_law"),quorum:gp("f_quorum")};
   [["f_age","age55plus"],["f_dis","disability"],["f_fix","fixedIncome"]].forEach(function(q){var x=document.querySelector('input[name="'+q[0]+'"]:checked');if(x)pdata[q[1]]=x.value});
   regErr="";
-  if(mgrVal.indexOf("property")>-1&&!pdata.mgrName){regErr="Enter the name of your property management company, or use the skip link for this question.";render();return}
-  busy=true;render();
+  var pe=document.getElementById("err");
+  var showPErr=function(m,focusId){pe.textContent=m;var f=focusId&&document.getElementById(focusId);if(f){f.scrollIntoView({block:"center"});f.focus()}else{pe.scrollIntoView({block:"center"})}};
+  if(mgrVal.indexOf("property")>-1&&!pdata.mgrName){showPErr("Enter the name of your property management company, or change \u201cWho manages it?\u201d to \u201cNot sure.\u201d","f_mgrname");return}
+  pe.textContent="";t.disabled=true;t.textContent="Saving\u2026";
   apiFetch("/api/auth/me",{method:"PUT",headers:{"Content-Type":"application/json","Authorization":"Bearer "+authToken},body:JSON.stringify(pdata)})
    .then(function(res){return res.json().then(function(body){return {ok:res.ok,body:body}})})
    .then(function(out){
-    busy=false;
-    if(!out.ok){regErr=out.body.error||"Could not save your profile.";render();return}
-    regErr="";
+    if(!out.ok){t.disabled=false;t.textContent="Save Profile";showPErr(out.body.error||"Could not save your profile.");return}
     reg=out.body.user;
     try{localStorage.setItem("hoand_user",JSON.stringify(reg))}catch(x){}
-    mode="signup";cur="feed";render();window.scrollTo(0,0);toast("Profile saved — thank you!");loadFeed()
+    mode="signup";cur="feed";render();window.scrollTo(0,0);toast("Profile saved \u2014 thank you!");loadFeed()
    })
-   .catch(function(err){busy=false;regErr=apiError(err);render()})}
+   .catch(function(err){t.disabled=false;t.textContent="Save Profile";showPErr(apiError(err))})}
  else if(t.id=="skipprofile"){
   mode="signup";cur="feed";render();window.scrollTo(0,0);loadFeed()}
  else if(t.id=="contbtn"){mode="signin";render()}

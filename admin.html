@@ -62,7 +62,7 @@ function vList(items){
    '<div class="row">'+
     '<div><b>Condo</b>'+esc(r.condo)+'</div>'+
     '<div><b>Units</b>'+(r.units?esc(r.units):na)+'</div>'+
-    '<div><b>Dues</b>'+(r.dues!=null?'$'+esc(r.dues)+'/mo':na)+'</div>'+
+    '<div><b>Dues</b>'+(r.dues!=null&&r.dues!==""?'$'+esc(r.dues)+'/mo':na)+'</div>'+
     '<div><b>Dues cover</b>'+(covers!=='—'?esc(covers):na)+'</div>'+
     '<div><b>Managed by</b>'+(r.mgr?esc(r.mgr)+(r.mgrName?" — "+esc(r.mgrName):""):na)+'</div>'+
     '<div><b>Reserve fund</b>'+(r.reserve?esc(r.reserve):na)+'</div>'+
