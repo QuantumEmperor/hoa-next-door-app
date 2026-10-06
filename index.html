@@ -90,6 +90,12 @@ header{display:flex;flex-direction:column;gap:8px;align-items:flex-start}
 .form{text-align:left}
 .pfwrap{margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--line)}
 .pfwrap label{margin:0 0 6px}
+.disc{background:var(--blueSoft);border-left:4px solid var(--blue);border-radius:10px;padding:12px 14px;font-size:14px;margin-bottom:14px}
+.rq{border:0;padding:0;margin:0 0 14px}
+.rq legend{font-size:14px;font-weight:700;margin-bottom:6px;padding:0}
+.rq label{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--card);border-radius:99px;padding:6px 12px;font-weight:600;margin:0 6px 6px 0;cursor:pointer}
+.rq label:has(input:checked){background:var(--sunSoft);border-color:var(--sun)}
+.rq input[type=radio]{width:auto;margin:0}
 .checks{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
 .checks label{display:flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--card);border-radius:99px;padding:5px 12px;font-weight:600;margin:0;cursor:pointer}
 input[type=checkbox]{width:auto;margin:0}
@@ -206,7 +212,7 @@ function pfField(fieldId,labelHtml,inputHtml){
 }
 function vProfile(){
  var dues=["Water","Sewer","Garbage","Heat","Snow removal","Insurance","Reserves","Landscaping"];
- return '<div class="reg"><img alt="Alaska HOA Accountability Project seal" src="'+LOGO+'"><h1>Let\'s build your HOA\'s profile</h1><p class="sub">Share what you know about your HOA. You can add or update information anytime.</p></div><div class="form card">'+
+ return '<div class="reg"><img alt="Alaska HOA Accountability Project seal" src="'+LOGO+'"><h1>Let\'s build your HOA\'s profile</h1><p class="sub">Share what you know about your HOA, and a little about yourself. You can add or update information anytime.</p></div><div class="form card">'+
  pfField('units','Number of units','<input id="f_units" type="text" inputmode="numeric" autocomplete="off" placeholder="e.g. 24">')+
  pfField('dues','Monthly dues per unit ($)','<input id="f_dues" type="text" inputmode="decimal" autocomplete="off" placeholder="e.g. 250">')+
  pfField('covers','What do the dues cover?','<div class="checks">'+dues.map(function(d){return '<label><input type="checkbox" class="f_cov" value="'+d+'">'+d+'</label>'}).join("")+'<label><input type="checkbox" id="f_cov_other">Other</label></div><div id="covotherwrap" style="display:none"><input id="f_cov_other_text" autocomplete="off" placeholder="What else do the dues cover?"></div>')+
@@ -214,11 +220,13 @@ function vProfile(){
  pfField('res','Does the association have a reserve fund?','<select id="f_res" autocomplete="off"><option value="" selected disabled>Select one</option><option>Yes</option><option>No</option><option>Not sure</option></select>')+
  pfField('law','Is your HOA currently in a lawsuit?','<select id="f_law" autocomplete="off"><option value="" selected disabled>Select one</option><option>Yes</option><option>No</option><option>Prefer not to say</option></select>')+
  pfField('quorum','How many owners are needed for a quorum at a meeting?','<input id="f_quorum" type="text" inputmode="numeric" autocomplete="off" placeholder="e.g. 10 owners or 10%">')+
+ [["age","Are you 55 or older?"],["dis","Do you consider yourself to have a disability?"],["fix","Do you primarily live on a fixed income? (for example Social Security, a pension, or disability benefits)"]].map(function(q){return '<fieldset class="rq"><legend>'+q[1]+'</legend>'+["Yes","No","Prefer not to answer"].map(function(o){return '<label><input type="radio" name="f_'+q[0]+'" value="'+o+'">'+o+'</label>'}).join("")+'</fieldset>'}).join("")+
  '<p class="err" id="err" role="alert">'+esc(regErr)+'</p>'+
  '<button class="btn" id="saveprofile"'+(busy?' disabled':'')+'>'+(busy?'Saving…':'Save Profile')+'</button>'+
  '<p style="text-align:center;margin:6px 0 0;font-size:13px;color:var(--mute)">Save the information I\'ve entered</p>'+
  '<button class="btn light" id="skipprofile" style="margin-top:16px">I\'ll do this later</button>'+
  '<p style="text-align:center;margin:6px 0 0;font-size:13px;color:var(--mute)">Go to HOA Next Door without completing my profile</p>'+
+ '<p style="margin:18px 0 0;font-size:12px;line-height:1.5;color:var(--mute)">Questions about age, disability, and income are optional, and skipping them will not affect your access to the app. Your answers are private: only the site administrator can see them. They are never shared with your board, property manager, or other members, and they are used only in anonymous, combined statistics. You can ask us to delete them at any time. <a href="#" class="pp">Privacy Policy</a></p>'+
  '</div>';
 }
 function showEditInfo(){
@@ -244,6 +252,7 @@ function showEditInfo(){
  '<label for="f_res">Does the association have a reserve fund?</label><select id="f_res" autocomplete="off">'+["Yes","No","Not sure"].map(function(o){return '<option'+(reg.reserve===o?' selected':'')+'>'+o+'</option>'}).join("")+'</select>'+
  '<label for="f_law">Is your HOA currently in a lawsuit?</label><select id="f_law" autocomplete="off">'+["Yes","No","Prefer not to say"].map(function(o){return '<option'+(reg.lawsuit===o?' selected':'')+'>'+o+'</option>'}).join("")+'</select>'+
  '<label for="f_quorum">How many owners are needed for a quorum at a meeting?</label><input id="f_quorum" type="text" inputmode="numeric" autocomplete="off" placeholder="e.g. 10 owners or 10%" value="'+esc(reg.quorum)+'">'+
+ [["age","age55plus","Are you 55 or older?"],["dis","disability","Do you consider yourself to have a disability?"],["fix","fixedIncome","Do you primarily live on a fixed income? (for example Social Security, a pension, or disability benefits)"]].map(function(q){return '<fieldset class="rq"><legend>'+q[2]+'</legend>'+["Yes","No","Prefer not to answer"].map(function(o){return '<label><input type="radio" name="f_'+q[0]+'" value="'+o+'"'+(reg[q[1]]===o?' checked':'')+'>'+o+'</label>'}).join("")+'</fieldset>'}).join("")+
  '<label class="opt"><input type="checkbox" id="f_news"'+(reg.newsletter?' checked':'')+'> Send me the HOA Next Door newsletter (optional)</label>'+
  '<p class="err" id="editinfoerr" role="alert"></p><button class="btn" id="saveeditinfo" style="margin-top:10px">Save changes</button>'+
  '</div>';
@@ -287,13 +296,14 @@ function showAbout(){
 function showPolicy(){
  if(document.querySelector(".ov"))return;
  var d=document.createElement("div");d.className="ov";d.setAttribute("role","dialog");d.setAttribute("aria-label","Privacy Policy");
- d.innerHTML=`<button class="btn light ppx" style="margin-bottom:14px">Close</button><h1>Privacy Policy</h1><p style="color:var(--mute)">Effective September 25, 2026.</p>
+ d.innerHTML=`<button class="btn light ppx" style="margin-bottom:14px">Close</button><h1>Privacy Policy</h1><p style="color:var(--mute)">Effective October 6, 2026.</p>
 <p>HOA Next Door is operated by the Alaska HOA Accountability Project ("we," "us," or "the Project"). This policy explains what we collect through this app, why we collect it, who can see it, and the choices you have. It applies to this app only.</p>
 <h2>1. Information we collect</h2>
 <p><b>Information you give us directly:</b></p>
 <ul><li><b>Account information:</b> your name, email address, the password you choose (stored only in scrambled/encrypted form, never as plain text), your unit number, and your role (owner or board member).</li>
 <li><b>HOA information:</b> the HOA's name, number of units, monthly dues, what the dues cover, who manages the property (including a management company's name, if any), and whether a reserve fund exists.</li>
 <li><b>Content you post:</b> anything you write or upload in the community feed or elsewhere in the app.</li>
+<li><b>Optional questions:</b> if you choose to answer them, whether you are 55 or older, whether you consider yourself to have a disability, and whether you primarily live on a fixed income. These are entirely voluntary; skipping them never affects your access to the app. Your answers are visible only to the site administrator, are never shown to your board, property manager, or other members, and are used only in anonymous, aggregated statistics. You can ask us to delete them at any time.</li>
 <li><b>Newsletter preference:</b> whether you opted in to receive it.</li></ul>
 <p><b>Information collected automatically:</b></p>
 <ul><li>Your device stores a login token and your basic profile locally (in browser storage) so you stay signed in. This stays on your device and is not something we collect on our servers beyond what's described above.</li>
@@ -579,6 +589,7 @@ function onAppClick(e){
   if(document.getElementById("f_cov_other").checked){var otI=document.getElementById("f_cov_other_text").value.trim();if(otI)covI.push(otI)}
   var fnameI=gi("f_first"),lnameI=gi("f_last");
   var ri={name:(fnameI+" "+lnameI).trim(),unit:gi("f_unit"),role:gi("f_role"),condo:gi("f_condo"),units:gi("f_units"),dues:gi("f_dues"),covers:covI,mgr:gi("f_mgr"),mgrName:(gi("f_mgr").indexOf("property")>-1?gi("f_mgrname"):""),reserve:gi("f_res"),lawsuit:gi("f_law"),quorum:gi("f_quorum"),newsletter:document.getElementById("f_news").checked};
+  [["f_age","age55plus"],["f_dis","disability"],["f_fix","fixedIncome"]].forEach(function(q){var x=document.querySelector('.ov input[name="'+q[0]+'"]:checked');if(x)ri[q[1]]=x.value});
   if(!fnameI||!lnameI){if(ie)ie.textContent="Please fill in your first and last name.";return}
   if(!ri.condo){if(ie)ie.textContent="Please fill in the name of your HOA.";return}
   if(!ri.role){if(ie)ie.textContent="Please select what you are (owner or board member).";return}
@@ -605,6 +616,7 @@ function onAppClick(e){
   if(cocEl&&cocEl.checked){var otp=document.getElementById("f_cov_other_text");var otv=otp?otp.value.trim():"";if(otv)covP.push(otv)}
   var mgrVal=gp("f_mgr");
   var pdata={units:gp("f_units"),dues:gp("f_dues"),covers:covP,mgr:mgrVal,mgrName:(mgrVal.indexOf("property")>-1?gp("f_mgrname"):""),reserve:gp("f_res"),lawsuit:gp("f_law"),quorum:gp("f_quorum")};
+  [["f_age","age55plus"],["f_dis","disability"],["f_fix","fixedIncome"]].forEach(function(q){var x=document.querySelector('input[name="'+q[0]+'"]:checked');if(x)pdata[q[1]]=x.value});
   regErr="";
   if(mgrVal.indexOf("property")>-1&&!pdata.mgrName){regErr="Enter the name of your property management company, or use the skip link for this question.";render();return}
   busy=true;render();

@@ -68,6 +68,9 @@ function vList(items){
     '<div><b>Reserve fund</b>'+(r.reserve?esc(r.reserve):na)+'</div>'+
     '<div><b>Lawsuit</b>'+(r.lawsuit?esc(r.lawsuit):na)+'</div>'+
     '<div><b>Quorum</b>'+(r.quorum?esc(r.quorum):na)+'</div>'+
+    '<div><b>55 or older</b>'+(r.age55plus?esc(r.age55plus):na)+'</div>'+
+    '<div><b>Disability</b>'+(r.disability?esc(r.disability):na)+'</div>'+
+    '<div><b>Fixed income</b>'+(r.fixedIncome?esc(r.fixedIncome):na)+'</div>'+
     '<div><b>Newsletter</b>'+(r.newsletter?"Yes":"No")+'</div>'+
    '</div>'+
    '<button class="small pwbtn" data-id="'+esc(r._id)+'" data-name="'+esc(r.name)+'" style="margin-top:10px">Reset password</button> '+
