@@ -50,7 +50,7 @@ nav button:focus-visible,button:focus-visible,input:focus-visible,select:focus-v
 .meta{margin-top:10px;font-size:13px;color:var(--mute);display:flex;gap:14px;align-items:center}
 .meta button{border:0;background:none;color:var(--mute);font:inherit;font-weight:600;cursor:pointer;padding:0}
 .meta button.liked{color:var(--warn)}
-.chips{display:flex;gap:6px;overflow-x:auto;margin-bottom:12px;padding-bottom:2px;scrollbar-width:none;-ms-overflow-style:none}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px;padding-bottom:2px}
 .chips::-webkit-scrollbar{display:none}
 .chip{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:99px;padding:5px 12px;font:inherit;font-size:14px;cursor:pointer;white-space:nowrap}
 .chip.on{background:var(--sun);border-color:var(--sun);color:#1d2b3a;font-weight:800}
