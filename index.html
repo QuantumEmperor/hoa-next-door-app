@@ -50,7 +50,8 @@ nav button:focus-visible,button:focus-visible,input:focus-visible,select:focus-v
 .meta{margin-top:10px;font-size:13px;color:var(--mute);display:flex;gap:14px;align-items:center}
 .meta button{border:0;background:none;color:var(--mute);font:inherit;font-weight:600;cursor:pointer;padding:0}
 .meta button.liked{color:var(--warn)}
-.chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px;padding-bottom:2px}
+.chips{display:flex;flex-wrap:nowrap;gap:5px;margin-bottom:12px;padding-bottom:2px;overflow:hidden}
+.chips .chip{flex:0 0 auto;font-size:14px;padding:.36em .85em}
 .chips::-webkit-scrollbar{display:none}
 .chip{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:99px;padding:5px 12px;font:inherit;font-size:14px;cursor:pointer;white-space:nowrap}
 .chip.on{background:var(--sun);border-color:var(--sun);color:#1d2b3a;font-weight:800}
@@ -430,6 +431,14 @@ function loadReplies(postId){
   })
   .catch(function(){repliesLoadingId=null;if(cur=="feed")render();});
 }
+function fitChips(){
+ var c=document.querySelector(".chips");if(!c)return;
+ var ch=c.querySelectorAll(".chip"),s=14;
+ var set=function(v){c.style.gap=Math.max(2,Math.round(v*0.35))+"px";for(var i=0;i<ch.length;i++){ch[i].style.fontSize=v+"px";ch[i].style.padding=".36em "+(v<11?".55em":".85em")}};
+ var over=function(){return ch[ch.length-1].getBoundingClientRect().right>c.getBoundingClientRect().right-0.5};
+ set(s);while(over()&&s>8){s-=0.25;set(s)}
+}
+window.addEventListener("resize",fitChips);
 function render(){
  var hd=document.getElementById("hd"),nv=document.getElementById("nav"),mn=document.getElementById("main");
  if(mode=="reset"){hd.style.display="none";nv.style.display="none";mn.innerHTML=vReset();return}
@@ -441,7 +450,7 @@ function render(){
  hd.style.display="flex";nv.style.display="none";
  hd.innerHTML='<div class="hdtop"><img alt="Alaska HOA Accountability Project seal" src="'+LOGO+'"><div><b>HOA Next Door</b><small>Neighbors\' posts</small></div></div><div class="hdbtns"><button id="editinfo">Edit info</button><button id="notifsettings">Notifications</button><button id="signout">Sign out</button></div>';
  var v={feed:vFeed}[cur];
- mn.innerHTML=v();nav();
+ mn.innerHTML=v();nav();fitChips();
 }
 function apiError(err){
  if(err&&err.name==="AbortError")return "The server is taking too long to respond. It may be starting up after being idle — please try again in about a minute.";
