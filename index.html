@@ -22,16 +22,15 @@ box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:en
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f161d;--card:#18222c;--ink:#e8eef4;--mute:#93a3b3;--line:#2a3846;--blue:#7fb0e0;--blueSoft:#1f3346;--sun:#f2b843;--sunSoft:#3a3117;--ok:#5fc48c;--okSoft:#183526;--warn:#f08a5d;--warnSoft:#3d2418}}
 :root[data-theme="dark"]{--bg:#0f161d;--card:#18222c;--ink:#e8eef4;--mute:#93a3b3;--line:#2a3846;--blue:#7fb0e0;--blueSoft:#1f3346;--sun:#f2b843;--sunSoft:#3a3117;--ok:#5fc48c;--okSoft:#183526;--warn:#f08a5d;--warnSoft:#3d2418}
 *{box-sizing:border-box}
-html,body{min-height:100%;margin:0}
+html,body{height:100%;margin:0}
 html{scroll-padding-top:env(safe-area-inset-top,0px)}
 body{background:var(--bg);color:var(--ink);font-family:'Nunito',system-ui,-apple-system,'Segoe UI',sans-serif;font-size:16px;line-height:1.45;display:flex;justify-content:center}
-#app{width:100%;max-width:560px;min-height:100vh;display:flex;flex-direction:column;background:var(--bg)}
+#app{width:100%;max-width:560px;height:100%;display:flex;flex-direction:column;background:var(--bg)}
 header{padding:14px 20px 10px;background:var(--blue);color:#fff}
 header b{font-size:19px;font-weight:800}
 header small{display:block;opacity:.85;font-size:13px}
-main{flex:1;padding:14px 20px 20px}
-header{position:sticky;top:0;z-index:5}
-nav{position:sticky;bottom:0;z-index:5}
+main{flex:1;overflow-y:auto;padding:14px 20px 20px;scrollbar-width:none;-ms-overflow-style:none}
+main::-webkit-scrollbar{display:none}
 nav{display:flex;background:var(--card);border-top:1px solid var(--line)}
 nav button{flex:1;border:0;background:none;color:var(--mute);padding:9px 0 8px;font:inherit;font-size:12px;font-weight:600;cursor:pointer}
 nav button span{display:block;font-size:20px;line-height:1.2}
@@ -50,8 +49,7 @@ nav button:focus-visible,button:focus-visible,input:focus-visible,select:focus-v
 .meta{margin-top:10px;font-size:13px;color:var(--mute);display:flex;gap:14px;align-items:center}
 .meta button{border:0;background:none;color:var(--mute);font:inherit;font-weight:600;cursor:pointer;padding:0}
 .meta button.liked{color:var(--warn)}
-.chips{display:flex;flex-wrap:nowrap;gap:5px;margin-bottom:12px;padding-bottom:2px;overflow:hidden}
-.chips .chip{flex:0 0 auto;font-size:14px;padding:.36em .85em}
+.chips{display:flex;gap:6px;overflow-x:auto;margin-bottom:12px;padding-bottom:2px;scrollbar-width:none;-ms-overflow-style:none}
 .chips::-webkit-scrollbar{display:none}
 .chip{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:99px;padding:5px 12px;font:inherit;font-size:14px;cursor:pointer;white-space:nowrap}
 .chip.on{background:var(--sun);border-color:var(--sun);color:#1d2b3a;font-weight:800}
@@ -71,11 +69,6 @@ label{font-size:14px;font-weight:700;display:block;margin-bottom:4px}
 .doc{display:flex;align-items:center;gap:12px}
 .doc .ic{font-size:26px}
 .doc small{color:var(--mute);font-size:13px}
-.remind{position:fixed;inset:0;background:rgba(15,22,29,.55);z-index:9;display:flex;align-items:center;justify-content:center;padding:16px;overflow-y:auto}
-.remind .box{background:var(--card);color:var(--ink);border-radius:14px;max-width:440px;width:100%;padding:20px 18px;box-shadow:0 10px 30px rgba(0,0,0,.25)}
-.remind h2{margin:0 0 4px;font-size:19px}
-.remind .sub{color:var(--mute);font-size:14px;margin:0 0 14px}
-.remind .note{color:var(--mute);font-size:12px;line-height:1.5;margin:12px 0 0}
 .toast{position:fixed;left:50%;bottom:84px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:10px;font-weight:700;font-size:14px}
 h2{font-size:18px;margin:2px 0 10px}
 .empty{color:var(--mute);text-align:center;padding:24px 0}
@@ -97,12 +90,6 @@ header{display:flex;flex-direction:column;gap:8px;align-items:flex-start}
 .form{text-align:left}
 .pfwrap{margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--line)}
 .pfwrap label{margin:0 0 6px}
-.disc{background:var(--blueSoft);border-left:4px solid var(--blue);border-radius:10px;padding:12px 14px;font-size:14px;margin-bottom:14px}
-.rq{border:0;padding:0;margin:0 0 14px}
-.rq legend{font-size:14px;font-weight:700;margin-bottom:6px;padding:0}
-.rq label{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--card);border-radius:99px;padding:6px 12px;font-weight:600;margin:0 6px 6px 0;cursor:pointer}
-.rq label:has(input:checked){background:var(--sunSoft);border-color:var(--sun)}
-.rq input[type=radio]{width:auto;margin:0}
 .checks{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
 .checks label{display:flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--card);border-radius:99px;padding:5px 12px;font-weight:600;margin:0;cursor:pointer}
 input[type=checkbox]{width:auto;margin:0}
@@ -116,12 +103,6 @@ input[type=checkbox]{width:auto;margin:0}
 .opt a,.form a{color:var(--blue);font-weight:800}
 .ov{position:fixed;top:0;bottom:0;left:50%;width:100%;max-width:560px;transform:translateX(-50%);background:var(--bg);z-index:10;overflow-y:auto;padding:calc(16px + env(safe-area-inset-top,0px)) 20px calc(28px + env(safe-area-inset-bottom,0px));scrollbar-width:none;-ms-overflow-style:none}
 .ov::-webkit-scrollbar{display:none}
-@media (hover:hover) and (pointer:fine){
-.ov{scrollbar-width:thin;scrollbar-color:var(--mute) transparent;-ms-overflow-style:auto}
-.ov::-webkit-scrollbar{display:block;width:10px}
-.ov::-webkit-scrollbar-thumb{background:var(--mute);border-radius:10px;border:2px solid var(--bg)}
-.ov::-webkit-scrollbar-track{background:transparent}
-}
 .ov h1{font-size:22px;margin:0 0 2px}
 .ov h2{font-size:16px;margin:16px 0 4px}
 .ov p,.ov li{font-size:15px;margin:0 0 6px}
@@ -225,7 +206,7 @@ function pfField(fieldId,labelHtml,inputHtml){
 }
 function vProfile(){
  var dues=["Water","Sewer","Garbage","Heat","Snow removal","Insurance","Reserves","Landscaping"];
- return '<div class="reg"><img alt="Alaska HOA Accountability Project seal" src="'+LOGO+'"><h1>Let\'s build your HOA\'s profile</h1><p class="sub">Share what you know about your HOA, and a little about yourself. You can add or update information anytime.</p></div><div class="form card">'+
+ return '<div class="reg"><img alt="Alaska HOA Accountability Project seal" src="'+LOGO+'"><h1>Let\'s build your HOA\'s profile</h1><p class="sub">Share what you know about your HOA. You can add or update information anytime.</p></div><div class="form card">'+
  pfField('units','Number of units','<input id="f_units" type="text" inputmode="numeric" autocomplete="off" placeholder="e.g. 24">')+
  pfField('dues','Monthly dues per unit ($)','<input id="f_dues" type="text" inputmode="decimal" autocomplete="off" placeholder="e.g. 250">')+
  pfField('covers','What do the dues cover?','<div class="checks">'+dues.map(function(d){return '<label><input type="checkbox" class="f_cov" value="'+d+'">'+d+'</label>'}).join("")+'<label><input type="checkbox" id="f_cov_other">Other</label></div><div id="covotherwrap" style="display:none"><input id="f_cov_other_text" autocomplete="off" placeholder="What else do the dues cover?"></div>')+
@@ -233,13 +214,11 @@ function vProfile(){
  pfField('res','Does the association have a reserve fund?','<select id="f_res" autocomplete="off"><option value="" selected disabled>Select one</option><option>Yes</option><option>No</option><option>Not sure</option></select>')+
  pfField('law','Is your HOA currently in a lawsuit?','<select id="f_law" autocomplete="off"><option value="" selected disabled>Select one</option><option>Yes</option><option>No</option><option>Prefer not to say</option></select>')+
  pfField('quorum','How many owners are needed for a quorum at a meeting?','<input id="f_quorum" type="text" inputmode="numeric" autocomplete="off" placeholder="e.g. 10 owners or 10%">')+
- [["age","Are you 55 or older?"],["dis","Do you consider yourself to have a disability?"],["fix","Do you primarily live on a fixed income? (for example Social Security, a pension, or disability benefits)"]].map(function(q){return '<fieldset class="rq"><legend>'+q[1]+'</legend>'+["Yes","No","Prefer not to answer"].map(function(o){return '<label><input type="radio" name="f_'+q[0]+'" value="'+o+'">'+o+'</label>'}).join("")+'</fieldset>'}).join("")+
  '<p class="err" id="err" role="alert">'+esc(regErr)+'</p>'+
  '<button class="btn" id="saveprofile"'+(busy?' disabled':'')+'>'+(busy?'Saving…':'Save Profile')+'</button>'+
  '<p style="text-align:center;margin:6px 0 0;font-size:13px;color:var(--mute)">Save the information I\'ve entered</p>'+
  '<button class="btn light" id="skipprofile" style="margin-top:16px">I\'ll do this later</button>'+
  '<p style="text-align:center;margin:6px 0 0;font-size:13px;color:var(--mute)">Go to HOA Next Door without completing my profile</p>'+
- '<p style="margin:18px 0 0;font-size:12px;line-height:1.5;color:var(--mute)">Questions about age, disability, and income are optional, and skipping them will not affect your access to the app. Your answers are private: only the site administrator can see them. They are never shared with your board, property manager, or other members, and they are used only in anonymous, combined statistics. You can ask us to delete them at any time. <a href="#" class="pp">Privacy Policy</a></p>'+
  '</div>';
 }
 function showEditInfo(){
@@ -260,12 +239,11 @@ function showEditInfo(){
  '<div class="two"><div><label for="f_units">Number of units</label><input id="f_units" type="text" inputmode="numeric" autocomplete="off" value="'+esc(reg.units)+'"></div><div><label for="f_dues">Monthly dues per unit ($)</label><input id="f_dues" type="text" inputmode="decimal" autocomplete="off" value="'+esc(reg.dues)+'"></div></div>'+
  '<label>What do the dues cover?</label><div class="checks">'+dues.map(function(dd){return '<label><input type="checkbox" class="f_cov" value="'+dd+'"'+(covers.indexOf(dd)>-1?' checked':'')+'>'+dd+'</label>'}).join("")+'<label><input type="checkbox" id="f_cov_other"'+(otherCov.length?' checked':'')+'>Other</label></div>'+
  '<div id="covotherwrap" style="display:'+(otherCov.length?'block':'none')+'"><input id="f_cov_other_text" autocomplete="off" placeholder="What else do the dues cover?" value="'+esc(otherCov.join(", "))+'"></div>'+
- '<label for="f_mgr">Who manages it?</label><select id="f_mgr" autocomplete="off"><option value=""'+(reg.mgr?'':' selected')+'>Select one</option>'+["The board (self-managed)","A property management company","Not sure"].map(function(o){return '<option'+(reg.mgr===o?' selected':'')+'>'+o+'</option>'}).join("")+'</select>'+
+ '<label for="f_mgr">Who manages it?</label><select id="f_mgr" autocomplete="off">'+["The board (self-managed)","A property management company","Not sure"].map(function(o){return '<option'+(reg.mgr===o?' selected':'')+'>'+o+'</option>'}).join("")+'</select>'+
  '<div id="mgrwrap" style="display:'+(isProp?'block':'none')+'"><label for="f_mgrname">Name of property management company</label><input id="f_mgrname" autocomplete="off" value="'+esc(reg.mgrName||"")+'"></div>'+
- '<label for="f_res">Does the association have a reserve fund?</label><select id="f_res" autocomplete="off"><option value=""'+(reg.reserve?'':' selected')+'>Select one</option>'+["Yes","No","Not sure"].map(function(o){return '<option'+(reg.reserve===o?' selected':'')+'>'+o+'</option>'}).join("")+'</select>'+
- '<label for="f_law">Is your HOA currently in a lawsuit?</label><select id="f_law" autocomplete="off"><option value=""'+(reg.lawsuit?'':' selected')+'>Select one</option>'+["Yes","No","Prefer not to say"].map(function(o){return '<option'+(reg.lawsuit===o?' selected':'')+'>'+o+'</option>'}).join("")+'</select>'+
+ '<label for="f_res">Does the association have a reserve fund?</label><select id="f_res" autocomplete="off">'+["Yes","No","Not sure"].map(function(o){return '<option'+(reg.reserve===o?' selected':'')+'>'+o+'</option>'}).join("")+'</select>'+
+ '<label for="f_law">Is your HOA currently in a lawsuit?</label><select id="f_law" autocomplete="off">'+["Yes","No","Prefer not to say"].map(function(o){return '<option'+(reg.lawsuit===o?' selected':'')+'>'+o+'</option>'}).join("")+'</select>'+
  '<label for="f_quorum">How many owners are needed for a quorum at a meeting?</label><input id="f_quorum" type="text" inputmode="numeric" autocomplete="off" placeholder="e.g. 10 owners or 10%" value="'+esc(reg.quorum)+'">'+
- [["age","age55plus","Are you 55 or older?"],["dis","disability","Do you consider yourself to have a disability?"],["fix","fixedIncome","Do you primarily live on a fixed income? (for example Social Security, a pension, or disability benefits)"]].map(function(q){return '<fieldset class="rq"><legend>'+q[2]+'</legend>'+["Yes","No","Prefer not to answer"].map(function(o){return '<label><input type="radio" name="f_'+q[0]+'" value="'+o+'"'+(reg[q[1]]===o?' checked':'')+'>'+o+'</label>'}).join("")+'</fieldset>'}).join("")+
  '<label class="opt"><input type="checkbox" id="f_news"'+(reg.newsletter?' checked':'')+'> Send me the HOA Next Door newsletter (optional)</label>'+
  '<p class="err" id="editinfoerr" role="alert"></p><button class="btn" id="saveeditinfo" style="margin-top:10px">Save changes</button>'+
  '</div>';
@@ -303,20 +281,20 @@ function showAbout(){
 <p style="color:var(--mute)">Stronger HOA communities. A brighter Alaska.</p>
 <p style="font-style:italic;text-align:center;margin-top:18px">Annuit Coeptis. Novus Ordo Seclorum.</p>
 <p style="color:var(--mute);text-align:center;font-size:13px">"He favors our undertakings." "A new order of the ages."</p>
+<p style="color:var(--mute);font-size:12px;margin-top:18px">HOA Next Door is an independent Alaska community app. It is not affiliated with any other app, website, or YouTube channel that uses the same or a similar name, including any videos or channels called "HOA Next Door."</p>
 <button class="btn ppx" style="margin-top:14px">Close</button>`;
  document.body.appendChild(d);d.scrollTop=0;
 }
 function showPolicy(){
  if(document.querySelector(".ov"))return;
  var d=document.createElement("div");d.className="ov";d.setAttribute("role","dialog");d.setAttribute("aria-label","Privacy Policy");
- d.innerHTML=`<button class="btn light ppx" style="margin-bottom:14px">Close</button><h1>Privacy Policy</h1><p style="color:var(--mute)">Effective October 6, 2026.</p>
+ d.innerHTML=`<button class="btn light ppx" style="margin-bottom:14px">Close</button><h1>Privacy Policy</h1><p style="color:var(--mute)">Effective September 25, 2026.</p>
 <p>HOA Next Door is operated by the Alaska HOA Accountability Project ("we," "us," or "the Project"). This policy explains what we collect through this app, why we collect it, who can see it, and the choices you have. It applies to this app only.</p>
 <h2>1. Information we collect</h2>
 <p><b>Information you give us directly:</b></p>
 <ul><li><b>Account information:</b> your name, email address, the password you choose (stored only in scrambled/encrypted form, never as plain text), your unit number, and your role (owner or board member).</li>
 <li><b>HOA information:</b> the HOA's name, number of units, monthly dues, what the dues cover, who manages the property (including a management company's name, if any), and whether a reserve fund exists.</li>
 <li><b>Content you post:</b> anything you write or upload in the community feed or elsewhere in the app.</li>
-<li><b>Optional questions:</b> if you choose to answer them, whether you are 55 or older, whether you consider yourself to have a disability, and whether you primarily live on a fixed income. These are entirely voluntary; skipping them never affects your access to the app. Your answers are visible only to the site administrator, are never shown to your board, property manager, or other members, and are used only in anonymous, aggregated statistics. You can ask us to delete them at any time.</li>
 <li><b>Newsletter preference:</b> whether you opted in to receive it.</li></ul>
 <p><b>Information collected automatically:</b></p>
 <ul><li>Your device stores a login token and your basic profile locally (in browser storage) so you stay signed in. This stays on your device and is not something we collect on our servers beyond what's described above.</li>
@@ -354,7 +332,7 @@ function showPolicy(){
 <button class="btn ppx" style="margin-top:14px">Close</button>`;
  document.body.appendChild(d);d.scrollTop=0;
 }
-function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
 var BADWORDS=["fuck","shit","bitch","asshole","cunt","bastard","dick","piss","slut","whore","fag","nigger","retard"];
 function hasProfanity(s){
  var low=String(s).toLowerCase();
@@ -431,14 +409,6 @@ function loadReplies(postId){
   })
   .catch(function(){repliesLoadingId=null;if(cur=="feed")render();});
 }
-function fitChips(){
- var c=document.querySelector(".chips");if(!c)return;
- var ch=c.querySelectorAll(".chip"),s=14;
- var set=function(v){c.style.gap=Math.max(2,Math.round(v*0.35))+"px";for(var i=0;i<ch.length;i++){ch[i].style.fontSize=v+"px";ch[i].style.padding=".36em "+(v<11?".55em":".85em")}};
- var over=function(){return ch[ch.length-1].getBoundingClientRect().right>c.getBoundingClientRect().right-0.5};
- set(s);while(over()&&s>8){s-=0.25;set(s)}
-}
-window.addEventListener("resize",fitChips);
 function render(){
  var hd=document.getElementById("hd"),nv=document.getElementById("nav"),mn=document.getElementById("main");
  if(mode=="reset"){hd.style.display="none";nv.style.display="none";mn.innerHTML=vReset();return}
@@ -450,7 +420,7 @@ function render(){
  hd.style.display="flex";nv.style.display="none";
  hd.innerHTML='<div class="hdtop"><img alt="Alaska HOA Accountability Project seal" src="'+LOGO+'"><div><b>HOA Next Door</b><small>Neighbors\' posts</small></div></div><div class="hdbtns"><button id="editinfo">Edit info</button><button id="notifsettings">Notifications</button><button id="signout">Sign out</button></div>';
  var v={feed:vFeed}[cur];
- mn.innerHTML=v();nav();fitChips();
+ mn.innerHTML=v();nav();
 }
 function apiError(err){
  if(err&&err.name==="AbortError")return "The server is taking too long to respond. It may be starting up after being idle — please try again in about a minute.";
@@ -474,7 +444,7 @@ function onAppClick(e){
  if(t.classList.contains("toforgot")){e.preventDefault();mode="forgot";forgotErr="";forgotMsg="";render();return}
  if(t.id=="forgotback"){mode="signin";forgotMsg="";forgotErr="";render();return}
  if(t.id=="resetdoneback"){mode="signin";resetDone=false;try{history.replaceState(null,"",location.pathname)}catch(x){}render();return}
- if(t.dataset.t){cur=t.dataset.t;render();window.scrollTo(0,0)}
+ if(t.dataset.t){cur=t.dataset.t;render();document.getElementById("main").scrollTop=0}
  else if(t.dataset.c){cat=t.dataset.c;render()}
  else if(t.dataset.viewreplies){var pid=t.dataset.viewreplies;if(openReplyId===pid){openReplyId=null}else{openReplyId=pid;if(!repliesByPost[pid])loadReplies(pid)}render();return}
  else if(t.dataset.replyto){
@@ -568,7 +538,7 @@ function onAppClick(e){
     regErr="";regDraft=null;
     authToken=out.body.token;reg=out.body.user;
     try{localStorage.setItem("hoand_token",authToken);localStorage.setItem("hoand_user",JSON.stringify(reg))}catch(x){}
-    mode="profile";render();window.scrollTo(0,0);toast("Welcome, "+reg.name.split(" ")[0]);
+    mode="profile";render();document.getElementById("main").scrollTop=0;toast("Welcome, "+reg.name.split(" ")[0]);
    })
    .catch(function(err){busy=false;regErr=apiError(err);render()})}
  else if(t.id=="signinbtn"){
@@ -584,7 +554,7 @@ function onAppClick(e){
     signinErr="";
     authToken=out.body.token;reg=out.body.user;
     try{localStorage.setItem("hoand_token",authToken);localStorage.setItem("hoand_user",JSON.stringify(reg))}catch(x){}
-    mode="signup";cur="feed";render();window.scrollTo(0,0);toast("Welcome back, "+reg.name.split(" ")[0]);loadFeed();setTimeout(maybeRemind,900)
+    mode="signup";cur="feed";render();document.getElementById("main").scrollTop=0;toast("Welcome back, "+reg.name.split(" ")[0]);loadFeed()
    })
    .catch(function(err){busy=false;signinErr=apiError(err);render()})}
  else if(t.id=="signout"){reg=null;authToken=null;mode="signedout";try{localStorage.removeItem("hoand_token");localStorage.removeItem("hoand_user")}catch(x){}render()}
@@ -610,7 +580,6 @@ function onAppClick(e){
   if(document.getElementById("f_cov_other").checked){var otI=document.getElementById("f_cov_other_text").value.trim();if(otI)covI.push(otI)}
   var fnameI=gi("f_first"),lnameI=gi("f_last");
   var ri={name:(fnameI+" "+lnameI).trim(),unit:gi("f_unit"),role:gi("f_role"),condo:gi("f_condo"),units:gi("f_units"),dues:gi("f_dues"),covers:covI,mgr:gi("f_mgr"),mgrName:(gi("f_mgr").indexOf("property")>-1?gi("f_mgrname"):""),reserve:gi("f_res"),lawsuit:gi("f_law"),quorum:gi("f_quorum"),newsletter:document.getElementById("f_news").checked};
-  [["f_age","age55plus"],["f_dis","disability"],["f_fix","fixedIncome"]].forEach(function(q){var x=document.querySelector('.ov input[name="'+q[0]+'"]:checked');if(x)ri[q[1]]=x.value});
   if(!fnameI||!lnameI){if(ie)ie.textContent="Please fill in your first and last name.";return}
   if(!ri.condo){if(ie)ie.textContent="Please fill in the name of your HOA.";return}
   if(!ri.role){if(ie)ie.textContent="Please select what you are (owner or board member).";return}
@@ -637,23 +606,22 @@ function onAppClick(e){
   if(cocEl&&cocEl.checked){var otp=document.getElementById("f_cov_other_text");var otv=otp?otp.value.trim():"";if(otv)covP.push(otv)}
   var mgrVal=gp("f_mgr");
   var pdata={units:gp("f_units"),dues:gp("f_dues"),covers:covP,mgr:mgrVal,mgrName:(mgrVal.indexOf("property")>-1?gp("f_mgrname"):""),reserve:gp("f_res"),lawsuit:gp("f_law"),quorum:gp("f_quorum")};
-  [["f_age","age55plus"],["f_dis","disability"],["f_fix","fixedIncome"]].forEach(function(q){var x=document.querySelector('input[name="'+q[0]+'"]:checked');if(x)pdata[q[1]]=x.value});
   regErr="";
-  var pe=document.getElementById("err");
-  var showPErr=function(m,focusId){pe.textContent=m;var f=focusId&&document.getElementById(focusId);if(f){f.scrollIntoView({block:"center"});f.focus()}else{pe.scrollIntoView({block:"center"})}};
-  if(mgrVal.indexOf("property")>-1&&!pdata.mgrName){showPErr("Enter the name of your property management company, or change \u201cWho manages it?\u201d to \u201cNot sure.\u201d","f_mgrname");return}
-  pe.textContent="";t.disabled=true;t.textContent="Saving\u2026";
+  if(mgrVal.indexOf("property")>-1&&!pdata.mgrName){regErr="Enter the name of your property management company, or use the skip link for this question.";render();return}
+  busy=true;render();
   apiFetch("/api/auth/me",{method:"PUT",headers:{"Content-Type":"application/json","Authorization":"Bearer "+authToken},body:JSON.stringify(pdata)})
    .then(function(res){return res.json().then(function(body){return {ok:res.ok,body:body}})})
    .then(function(out){
-    if(!out.ok){t.disabled=false;t.textContent="Save Profile";showPErr(out.body.error||"Could not save your profile.");return}
+    busy=false;
+    if(!out.ok){regErr=out.body.error||"Could not save your profile.";render();return}
+    regErr="";
     reg=out.body.user;
     try{localStorage.setItem("hoand_user",JSON.stringify(reg))}catch(x){}
-    mode="signup";cur="feed";render();window.scrollTo(0,0);toast("Profile saved \u2014 thank you!");loadFeed()
+    mode="signup";cur="feed";render();document.getElementById("main").scrollTop=0;toast("Profile saved — thank you!");loadFeed()
    })
-   .catch(function(err){t.disabled=false;t.textContent="Save Profile";showPErr(apiError(err))})}
+   .catch(function(err){busy=false;regErr=apiError(err);render()})}
  else if(t.id=="skipprofile"){
-  mode="signup";cur="feed";render();window.scrollTo(0,0);loadFeed()}
+  mode="signup";cur="feed";render();document.getElementById("main").scrollTop=0;loadFeed()}
  else if(t.id=="contbtn"){mode="signin";render()}
  else if(t.id=="forgotbtn"){
   var fgEmail=document.getElementById("fg_email").value.trim();
@@ -708,43 +676,6 @@ document.addEventListener("input",function(e){
 });
 render();
 if(reg&&authToken)loadFeed();
-var remindShown=false;
-function maybeRemind(){
- if(remindShown||!reg||!authToken||mode=="profile"||mode=="reset"||mode=="forgot")return;
- if(reg.age55plus||reg.disability||reg.fixedIncome)return;
- if(document.querySelector(".ov,.remind"))return;
- remindShown=true;
- var qs=[["age","age55plus","Are you 55 or older?"],["dis","disability","Do you consider yourself to have a disability?"],["fix","fixedIncome","Do you primarily live on a fixed income? (for example Social Security, a pension, or disability benefits)"]];
- var d=document.createElement("div");d.className="remind";d.setAttribute("role","dialog");d.setAttribute("aria-modal","true");d.setAttribute("aria-label","Three quick questions");
- d.innerHTML='<div class="box form"><h2>Three quick questions</h2><p class="sub">We added a few new questions to your profile. Answer them now, or skip and we\'ll remind you next time.</p>'+
-  qs.map(function(q){return '<fieldset class="rq"><legend>'+q[2]+'</legend>'+["Yes","No","Prefer not to answer"].map(function(o){return '<label><input type="radio" name="rm_'+q[0]+'" value="'+o+'">'+o+'</label>'}).join("")+'</fieldset>'}).join("")+
-  '<p class="err" id="rmerr" role="alert"></p><button class="btn" id="rmsave">Save my answers</button><button class="btn light" id="rmskip" style="margin-top:10px">Skip for now</button>'+
-  '<p class="note">These questions are optional. Your answers are private: only the site administrator can see them, and they are used only in anonymous, combined statistics. <a href="#" class="pp">Privacy Policy</a></p></div>';
- document.body.appendChild(d);
- var close=function(){d.remove()};
- d.querySelector("#rmskip").onclick=close;
- d.querySelector("#rmsave").onclick=function(){
-  var b=this,er=d.querySelector("#rmerr"),ans={};
-  qs.forEach(function(q){var x=d.querySelector('input[name="rm_'+q[0]+'"]:checked');if(x)ans[q[1]]=x.value});
-  if(!Object.keys(ans).length){er.textContent="Pick an answer for at least one question, or tap Skip for now.";return}
-  er.textContent="";b.disabled=true;b.textContent="Saving\u2026";
-  apiFetch("/api/auth/me",{method:"PUT",headers:{"Content-Type":"application/json","Authorization":"Bearer "+authToken},body:JSON.stringify(ans)})
-   .then(function(res){return res.json().then(function(body){return {ok:res.ok,body:body}})})
-   .then(function(out){
-    if(!out.ok){b.disabled=false;b.textContent="Save my answers";er.textContent=out.body.error||"Could not save your answers.";return}
-    if(out.body&&out.body.user)reg=out.body.user;else Object.keys(ans).forEach(function(k){reg[k]=ans[k]});
-    try{localStorage.setItem("hoand_user",JSON.stringify(reg))}catch(x){}
-    close();toast("Thank you! Your answers were saved.")
-   })
-   .catch(function(err){b.disabled=false;b.textContent="Save my answers";er.textContent=apiError(err)})};
-}
-if(reg&&authToken)setTimeout(maybeRemind,700);
-</script>
-<script>
-document.addEventListener("wheel",function(e){
- var t=e.target;if(t.closest&&(t.closest("main")||t.closest(".ov")||t.closest("select,textarea")))return;
- var s=document.querySelector(".ov");if(s)s.scrollTop+=e.deltaY;
-},{passive:true});
 </script>
 </body>
 </html>
