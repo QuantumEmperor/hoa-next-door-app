@@ -213,7 +213,7 @@ function vProfile(){
  pfField('mgr','Who manages it?','<select id="f_mgr" autocomplete="off"><option value="" selected disabled>Select one</option><option>The board (self-managed)</option><option>A property management company</option><option>Not sure</option></select><div id="mgrwrap" style="display:none"><label for="f_mgrname">Name of property management company</label><input id="f_mgrname" autocomplete="off"></div>')+
  pfField('res','Does the association have a reserve fund?','<select id="f_res" autocomplete="off"><option value="" selected disabled>Select one</option><option>Yes</option><option>No</option><option>Not sure</option></select>')+
  pfField('law','Is your HOA currently in a lawsuit?','<select id="f_law" autocomplete="off"><option value="" selected disabled>Select one</option><option>Yes</option><option>No</option><option>Prefer not to say</option></select>')+
- pfField('quorum','How many owners are needed for a quorum at a meeting?','<input id="f_quorum" type="text" inputmode="numeric" autocomplete="off" placeholder="e.g. 10 owners or 10%">')+
+ pfField('quorum','How many owners are needed for a quorum at a meeting?','<input id="f_quorum" type="text" autocomplete="off" placeholder="e.g. 10 owners or 51%">')+
  '<p class="err" id="err" role="alert">'+esc(regErr)+'</p>'+
  '<button class="btn" id="saveprofile"'+(busy?' disabled':'')+'>'+(busy?'Saving…':'Save Profile')+'</button>'+
  '<p style="text-align:center;margin:6px 0 0;font-size:13px;color:var(--mute)">Save the information I\'ve entered</p>'+
@@ -243,7 +243,7 @@ function showEditInfo(){
  '<div id="mgrwrap" style="display:'+(isProp?'block':'none')+'"><label for="f_mgrname">Name of property management company</label><input id="f_mgrname" autocomplete="off" value="'+esc(reg.mgrName||"")+'"></div>'+
  '<label for="f_res">Does the association have a reserve fund?</label><select id="f_res" autocomplete="off">'+["Yes","No","Not sure"].map(function(o){return '<option'+(reg.reserve===o?' selected':'')+'>'+o+'</option>'}).join("")+'</select>'+
  '<label for="f_law">Is your HOA currently in a lawsuit?</label><select id="f_law" autocomplete="off">'+["Yes","No","Prefer not to say"].map(function(o){return '<option'+(reg.lawsuit===o?' selected':'')+'>'+o+'</option>'}).join("")+'</select>'+
- '<label for="f_quorum">How many owners are needed for a quorum at a meeting?</label><input id="f_quorum" type="text" inputmode="numeric" autocomplete="off" placeholder="e.g. 10 owners or 10%" value="'+esc(reg.quorum)+'">'+
+ '<label for="f_quorum">How many owners are needed for a quorum at a meeting?</label><input id="f_quorum" type="text" autocomplete="off" placeholder="e.g. 10 owners or 51%" value="'+esc(reg.quorum)+'">'+
  '<label class="opt"><input type="checkbox" id="f_news"'+(reg.newsletter?' checked':'')+'> Send me the HOA Next Door newsletter (optional)</label>'+
  '<p class="err" id="editinfoerr" role="alert"></p><button class="btn" id="saveeditinfo" style="margin-top:10px">Save changes</button>'+
  '</div>';
